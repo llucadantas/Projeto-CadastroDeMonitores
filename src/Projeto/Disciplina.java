@@ -11,7 +11,6 @@ public class Disciplina {
 	
 	
 	public Disciplina(String nome, int nVagas) {
-		
 		this.nome = nome;
 		this.nVagas = nVagas;
 	}

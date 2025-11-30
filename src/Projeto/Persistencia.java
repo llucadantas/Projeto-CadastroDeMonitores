@@ -36,6 +36,8 @@ public class Persistencia {
         xstream.alias("Aluno", Aluno.class);
         xstream.alias("Edital", EditalDeMonitoria.class);
         xstream.alias("Disciplina", Disciplina.class);
+        xstream.alias("Coodernador", Coodernador.class);
+
     }
 	
     public void salvarCentral(CentralDeInformacoes central) {

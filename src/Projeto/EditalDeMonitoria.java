@@ -21,7 +21,6 @@ public class EditalDeMonitoria {
 	
 	public boolean inscrever(Aluno aluno, String nDisciplina) {
 	    if(jaAcabou()) {
-	        System.out.println("O prazo já encerrou.");
 	        return false;
 	    }
 
@@ -30,8 +29,6 @@ public class EditalDeMonitoria {
 	            return d.adicionarAluno(aluno); 
 	        }
 	    }
-
-	    System.out.println("Inscrição não realizada: Disciplina não encontrada no edital.");
 	    return false;
 	}
 	public boolean jaAcabou() {

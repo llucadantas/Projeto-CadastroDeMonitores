@@ -5,8 +5,16 @@ import java.util.List;
 public class CentralDeInformacoes {
 	private List<Aluno> todosAlunos = new ArrayList<>();
 	private List<EditalDeMonitoria> todosEditais = new ArrayList<>();
+	private Coodernador coodernador = null;
 	
-	
+	public Coodernador getCoodernador() {
+		return coodernador;
+	}
+
+	public void setCoodernador(Coodernador coodernador) {
+		this.coodernador = coodernador;
+	}
+
 	public boolean adicionarAluno(Aluno aluno) {
 		for(Aluno aluno1: todosAlunos) {
 			if(aluno1.getMatricula().equals(aluno.getMatricula())) {
