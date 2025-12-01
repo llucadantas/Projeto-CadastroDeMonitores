@@ -14,12 +14,9 @@ public class Login {
 	    
 	    user = central.recuperarAlunoPorMatricula(matricula);
 	    
-	    
-	    // 2. Verifica se o aluno existe
-	    if (user != null) {
+	    	    if (user != null) {
 	        
-	        // 3. Verifica a senha (Ainda precisa ser com HASH!)
-	        if (user.getSenha().equals(senha)) { 
+	        if (user.getSenha().equals(senha) && user.getMatricula().equals(matricula)) { 
 	            return true; 
 	        }
 	    }
@@ -30,7 +27,7 @@ public class Login {
 	public boolean loginCoodernador(String cpf, String senha) {
 		userCoodernador = central.getCoodernador();
 		
-		if(userCoodernador != null || userCoodernador.getCpf().equals(cpf)) {
+		if(userCoodernador != null && userCoodernador.getCpf().equals(cpf)) {
 			if(userCoodernador.getSenha().equals(senha)) {
 				return true;
 			}

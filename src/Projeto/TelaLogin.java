@@ -46,9 +46,6 @@ public class TelaLogin extends BaseTelas {
         
         JButton btnSair = criarBotao("Sair", 175, 160, 110, 30, e -> System.exit(0));
         estilizar(btnSair, 11, true);
-     
-       JButton btnEsqueciSenha=criarBotaoLink("Esqueci a senha", 185, 200, 130, 20, e -> recuperarSenha());
-       estilizar(btnEsqueciSenha, 12, true);
        
        JButton btnCadastro=criarBotaoLink("Não possuo cadastro", 150, 215, 200, 20, this::telaCadastro);
        estilizar(btnCadastro, 12, true);
@@ -59,15 +56,6 @@ public class TelaLogin extends BaseTelas {
     	new TelaCadastroAluno(c, p);
     }
 
-
-    private void recuperarSenha() {
-        String usuario = txtUsuario.getText();
-        if(usuario.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Digite seu usuário para recuperar a senha.");
-        } else {
-            JOptionPane.showMessageDialog(this, "Link enviado para: " + usuario);
-        }
-    }
     
     private void validarELogar(ActionEvent e) {
         String usuario = txtUsuario.getText();
@@ -83,7 +71,7 @@ public class TelaLogin extends BaseTelas {
             
 
             JOptionPane.showMessageDialog(this, "Login realizado como Coodernador! Abrindo sistema...");
-            new TelaPrincipalCoodernador();
+            new TelaPrincipalCoordenador();
 
 
             this.dispose(); 
@@ -105,4 +93,6 @@ public class TelaLogin extends BaseTelas {
 	public String getTxtSenha() {
 		return String.valueOf(txtSenha.getPassword());
 	}
+	
+	
 }
