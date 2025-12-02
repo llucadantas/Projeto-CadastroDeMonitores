@@ -4,7 +4,7 @@ import javax.swing.*;
 
 import java.awt.event.ActionEvent;
 
-public class TelaCadastroCoodernador extends BaseTelas {
+public class TelaCadastroCoordenador extends BaseTelas {
 
     private JTextField txtNome;
     private JTextField txtCpf;
@@ -14,7 +14,7 @@ public class TelaCadastroCoodernador extends BaseTelas {
     private CentralDeInformacoes central;
     private Persistencia p;
 
-    public TelaCadastroCoodernador(CentralDeInformacoes c, Persistencia p) {
+    public TelaCadastroCoordenador(CentralDeInformacoes c, Persistencia p) {
         // Define o tamanho da ÁREA DO FORMULÁRIO (o quadrado branco no meio)
         super("Cadastro de Coodernador", 450, 600);
         
@@ -38,8 +38,8 @@ public class TelaCadastroCoodernador extends BaseTelas {
         estilizar(lblSecao1, 12, true);
         lblSecao1.setForeground(java.awt.Color.GRAY);
 
-        criarLabel("CPF:", 30, 90, 80, 25);
-        txtCpf = criarCampoTexto(100, 90, 280, 25);
+        criarLabel("Email:", 30, 90, 80, 25);
+        txtEmail = criarCampoTexto(100, 90, 280, 25);
 
         criarLabel("Senha:", 30, 130, 80, 25);
         txtSenha = criarCampoSenha(100, 130, 280, 25);
@@ -47,9 +47,6 @@ public class TelaCadastroCoodernador extends BaseTelas {
         criarLabel("Nome", 30, 170, 80, 25);
         txtNome = criarCampoTexto(100, 170, 280, 25);
         
-        criarLabel("Email:", 30, 210, 80, 25);
-        txtEmail = criarCampoTexto(100, 210, 280, 25);
-
         // Botões
         JButton btnSalvar = criarBotao("Salvar Cadastro", 50, 450, 160, 40, this::validarECadastrar);
         estilizar(btnSalvar, 14, true);
@@ -60,19 +57,19 @@ public class TelaCadastroCoodernador extends BaseTelas {
     }
     
     private void validarECadastrar(ActionEvent e) {
-        String usuario = txtCpf.getText();
         String senha = new String(txtSenha.getPassword());
         String email = txtEmail.getText();
         String nome = txtNome.getText();
 
-        if (usuario.trim().isEmpty() || senha.trim().isEmpty() || nome.trim().isEmpty() || email.trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Preencha todos os campos.");
-            return;
-        }
         
-        if (cadastro.cadastrarCoodernador(usuario, senha, nome, email).isEmpty()) {
-            
+        try {
+        	
+    		cadastro.cadastrarCoordenador(senha, nome, email);
+        	Validacao.validacaoSenha(senha);
+        	Validacao.isEmailValido(email);
+        	
 
+        	
             JOptionPane.showMessageDialog(this, "Cadastro realizado! Abrindo sistema...");
             this.salvar(e);
 
@@ -80,8 +77,14 @@ public class TelaCadastroCoodernador extends BaseTelas {
             this.dispose(); 
 
             new TelaLogin(central, p);
-            
-        } 
+
+        }
+        catch(CadastroException | ValidacaoException ex) {
+        	JOptionPane.showMessageDialog(this, ex.getMessage());
+        }
+
+       
+   
     }
 
     private void salvar(ActionEvent e) {

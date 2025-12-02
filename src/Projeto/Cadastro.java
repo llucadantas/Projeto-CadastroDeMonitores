@@ -8,36 +8,34 @@ public class Cadastro {
     }
 
 
-    public String cadastrarAluno(String matricula, String senha, String nome, String email) {
+    public void cadastrarAluno(String matricula, String senha, String nome, String email) throws CadastroException {
+    	
+    	
         
         if (nome.trim().isEmpty() || matricula.trim().isEmpty() || senha.trim().isEmpty()) {
-            return "Todos os campos obrigatórios devem ser preenchidos.";
+            throw new CadastroException("Todos os campos precisam ser preenchidos");
         }
         
-        if (central.recuperarAlunoPorMatricula(matricula) != null) {
-            return "Matrícula já cadastrada no sistema.";
+        if (central.recuperarAlunoPorMatricula(matricula.trim())!= null) {
+            throw new CadastroException("Matricula já cadastrada");
         }
-        Aluno novoAluno = new Aluno(nome, email, senha, matricula);
+        Aluno novoAluno = new Aluno(matricula, senha, nome, email );
         
         central.adicionarAluno(novoAluno);
         
-        
-        return ""; 
-    }
+           }
     
-    public String cadastrarCoodernador(String cpf, String senha, String nome,String email) {
+    public void cadastrarCoordenador(String senha, String nome,String email) throws CadastroException {
         
-        if (nome.trim().isEmpty() || cpf.trim().isEmpty() || senha.trim().isEmpty()) {
-            return "Todos os campos obrigatórios devem ser preenchidos.";
+        if (nome.trim().isEmpty() ||senha.trim().isEmpty() || email.trim().isEmpty()) {
+            throw new CadastroException("Todos os campos precisam ser preenchidos");
         }
 
         
-        Coodernador novoCoodernador = new Coodernador(cpf, senha, nome, email);
+        Coodernador novoCoodernador = new Coodernador(senha, nome, email);
         
         this.central.setCoodernador(novoCoodernador);
         
-        
-        return "";
     }
     
 }

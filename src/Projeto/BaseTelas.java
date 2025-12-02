@@ -29,8 +29,8 @@ public abstract class BaseTelas extends JFrame {
         setSize(largura + 50, altura + 100); // Abre um pouco maior que o formulário
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        
         montarTela();
+
         setVisible(true);
     }
 

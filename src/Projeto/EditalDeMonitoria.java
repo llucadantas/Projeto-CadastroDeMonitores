@@ -7,6 +7,7 @@ import java.util.List;
 
 public class EditalDeMonitoria {
 	private String nEdital;
+	private String titulo;
 	private LocalDate inicioInscricoes;
 	private LocalDate fimInscricoes;
 	private List<Disciplina> disciplinas = new ArrayList<>();
@@ -40,6 +41,20 @@ public class EditalDeMonitoria {
 		return false;
 		
 	}
+	
+
+	public Object[] toObjectArray() {
+        String status;
+        if (jaAcabou()) {
+            status = "Encerrado";
+        } else if (LocalDate.now().isBefore(inicioInscricoes)) {
+            status = "Aguardando Abertura";
+        } else {
+            status = "Aberto";
+        }
+        
+        return new Object[]{id, titulo, inicioInscricoes, fimInscricoes, status};
+    }
 
 	public String toString() {
 		String titulo = "- Edital de monitorial " + id + " - \n";
@@ -99,6 +114,16 @@ public class EditalDeMonitoria {
 		this.disciplinas = disciplinas;
 	}
 	
+	
+	
+	public String getTitulo() {
+		return titulo;
+	}
+
+	public void setTitulo(String titulo) {
+		this.titulo = titulo;
+	}
+
 	
 	
 }

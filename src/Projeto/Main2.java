@@ -26,7 +26,7 @@ public class Main2 {
         }
         
         if(c.getCoodernador() == null) {
-        	new TelaCadastroCoodernador(c, p);
+        	new TelaCadastroCoordenador(c, p);
         }
         else {
         	new TelaLogin(c, p);

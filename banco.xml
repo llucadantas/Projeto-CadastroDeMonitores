@@ -2,10 +2,9 @@
   <todosAlunos/>
   <todosEditais/>
   <coodernador>
-    <nome>Marcus</nome>
-    <email>Hcahenriqueh@gmail.com</email>
-    <senha>2234</senha>
+    <nome>lucas</nome>
+    <email>lucas@gmail.com</email>
+    <senha>13122006</senha>
     <isCoodernador>true</isCoodernador>
-    <cpf>152509884-58</cpf>
   </coodernador>
 </Central>

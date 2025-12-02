@@ -55,11 +55,9 @@ public class TelaCadastroAluno extends BaseTelas {
         estilizar(btnSalvar, 14, true);
         btnSalvar.setForeground(new java.awt.Color(0, 100, 0));
 
-        JButton btnCancelar = criarBotao("Cancelar", 230, 450, 150, 40, e -> dispose());
+        JButton btnCancelar = criarBotao("Voltar", 230, 450, 150, 40, this::telaLogin);
         estilizar(btnCancelar, 14, false);
         
-        JButton btnLogin=criarBotaoLink("Já possuo conta", 200, 250, 150, 25, this::telaLogin);
-        estilizar(btnLogin, 12, true);
     }
     
     public void telaLogin(ActionEvent e) {
@@ -74,13 +72,12 @@ public class TelaCadastroAluno extends BaseTelas {
         String email = txtEmail.getText();
         String nome = txtNome.getText();
 
-        if (usuario.trim().isEmpty() || senha.trim().isEmpty() || nome.trim().isEmpty() || email.trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Preencha todos os campos.");
-            return;
-        }
         
-        if (cadastro.cadastrarAluno(usuario, senha, nome, email).isEmpty()) {
-            
+        try {
+        	
+        	Validacao.validacaoSenha(senha);
+        	Validacao.isEmailValido(email);
+        	cadastro.cadastrarAluno(usuario, senha, nome, email);
 
             JOptionPane.showMessageDialog(this, "Cadastro realizado! Abrindo sistema...");
             this.salvar(e);
@@ -89,9 +86,14 @@ public class TelaCadastroAluno extends BaseTelas {
             this.dispose(); 
 
             new TelaLogin(central, p);
-            
+
+        }
+        catch(CadastroException | ValidacaoException ex) {
+        	JOptionPane.showMessageDialog(this, ex.getMessage());
+        }
+           
         } 
-    }
+    
 
     private void salvar(ActionEvent e) {
     	p.salvarCentral(central);

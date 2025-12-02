@@ -2,7 +2,6 @@ package Projeto;
 
 public abstract class Pessoa {
 	public String nome;
-	public SexoLista sexo;
 	public String email;
 	public String senha;
 	public boolean isCoodernador;
@@ -21,14 +20,6 @@ public abstract class Pessoa {
 
 	public void setNome(String nome) {
 		this.nome = nome;
-	}
-
-	public SexoLista getSexo() {
-		return sexo;
-	}
-
-	public void setSexo(SexoLista sexo) {
-		this.sexo = sexo;
 	}
 
 	public String getEmail() {

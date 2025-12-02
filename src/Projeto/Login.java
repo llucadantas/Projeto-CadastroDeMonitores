@@ -24,10 +24,10 @@ public class Login {
 	    return false;
 	}
 	
-	public boolean loginCoodernador(String cpf, String senha) {
+	public boolean loginCoodernador(String email, String senha) {
 		userCoodernador = central.getCoodernador();
 		
-		if(userCoodernador != null && userCoodernador.getCpf().equals(cpf)) {
+		if(userCoodernador != null && userCoodernador.getEmail().equals(email)) {
 			if(userCoodernador.getSenha().equals(senha)) {
 				return true;
 			}
