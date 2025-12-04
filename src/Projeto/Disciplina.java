@@ -5,19 +5,41 @@ import java.util.List;
 
 public class Disciplina {
 	private String nome;
-	private int nVagas;
+	private int nVagasRem;
+	private int nVagasVol;
 	private List<Aluno> alunos = new ArrayList<>();
 	
 	
 	
-	public Disciplina(String nome, int nVagas) {
+	public Disciplina(String nome, int nVagasRem, int nVagasVol) {
 		this.nome = nome;
-		this.nVagas = nVagas;
+		this.nVagasRem = nVagasRem;
+		this.nVagasVol = nVagasVol;
 	}
 
 
 	public List<Aluno> getAlunos() {
 		return alunos;
+	}
+
+
+	public int getnVagasRem() {
+		return nVagasRem;
+	}
+
+
+	public void setnVagasRem(int nVagasRem) {
+		this.nVagasRem = nVagasRem;
+	}
+
+
+	public int getnVagasVol() {
+		return nVagasVol;
+	}
+
+
+	public void setnVagasVol(int nVagasVol) {
+		this.nVagasVol = nVagasVol;
 	}
 
 
@@ -31,14 +53,6 @@ public class Disciplina {
 	}
 
 
-	public int getnVagas() {
-		return nVagas;
-	}
-
-
-	public void setnVagas(int nVagas) {
-		this.nVagas = nVagas;
-	}
 
 
 	public boolean adicionarAluno(Aluno aluno) {

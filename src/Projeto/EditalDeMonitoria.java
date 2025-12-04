@@ -1,129 +1,142 @@
 package Projeto;
 
-import java.time.LocalDate;
-import java.time.Period;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class EditalDeMonitoria {
-	private String nEdital;
-	private String titulo;
-	private LocalDate inicioInscricoes;
-	private LocalDate fimInscricoes;
-	private List<Disciplina> disciplinas = new ArrayList<>();
-	private long id = System.currentTimeMillis();
-	
-	public EditalDeMonitoria(String nEdital, LocalDate inicioInscricoes, LocalDate fimInscricoes, List<Disciplina> disciplinas) {
-		this.nEdital = nEdital;
-		this.inicioInscricoes = inicioInscricoes;
-		this.fimInscricoes = fimInscricoes;
-		this.disciplinas = disciplinas;
-	}
-	
-	public boolean inscrever(Aluno aluno, String nDisciplina) {
-	    if(jaAcabou()) {
-	        return false;
-	    }
+    private String titulo;
+    private Date inicioInscricoes;
+    private Date fimInscricoes;
+    private int maximoInscricoes;
+    private double pesoCRE;
+    private double pesoMedia;
+    private List<Disciplina> disciplinas = new ArrayList<>();
+    private long id = System.currentTimeMillis() % 1000000;
+    
+    public EditalDeMonitoria(String titulo, Date inicioInscricoes, Date fimInscricoes, int maximoInscricoes, double pesoCRE, double pesoMedia, List<Disciplina> disciplinas) {
+        this.titulo = titulo;
+        this.inicioInscricoes = inicioInscricoes;
+        this.fimInscricoes = fimInscricoes;
+        this.maximoInscricoes = maximoInscricoes;
+        this.pesoCRE = pesoCRE;
+        this.pesoMedia = pesoMedia;
+        this.disciplinas = disciplinas;
+        
+    }
+    
+    public boolean inscrever(Aluno aluno, String nDisciplina) {
+        if(jaAcabou()) {
+            return false;
+        }
 
-	    for(Disciplina d: disciplinas) {
-	        if(d.getNome().equalsIgnoreCase(nDisciplina)) {
-	            return d.adicionarAluno(aluno); 
-	        }
-	    }
-	    return false;
-	}
-	public boolean jaAcabou() {
-		LocalDate hoje = LocalDate.now();
-		Period prazo = Period.between(hoje, fimInscricoes);
-		if(prazo.getDays()<=0) {
-			return true;
-		}
-		return false;
-		
-	}
-	
+        for(Disciplina d: disciplinas) {
+            if(d.getNome().equalsIgnoreCase(nDisciplina)) {
+                return d.adicionarAluno(aluno); 
+            }
+        }
+        return false;
+    }
 
-	public Object[] toObjectArray() {
+    public boolean jaAcabou() {
+        Date hoje = new Date();
+        return hoje.after(fimInscricoes);
+    }
+    
+    public Object[] toObjectArray() {
         String status;
+        Date hoje = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        
         if (jaAcabou()) {
             status = "Encerrado";
-        } else if (LocalDate.now().isBefore(inicioInscricoes)) {
+        } else if (hoje.before(inicioInscricoes)) {
             status = "Aguardando Abertura";
         } else {
             status = "Aberto";
         }
         
-        return new Object[]{id, titulo, inicioInscricoes, fimInscricoes, status};
+        return new Object[]{id, titulo, sdf.format(inicioInscricoes), sdf.format(fimInscricoes), status};
     }
 
-	public String toString() {
-		String titulo = "- Edital de monitorial " + id + " - \n";
-		String dStr = "";
-		String status = "";
-		for(Disciplina d: disciplinas) {
-			dStr += d.getNome() + " - " + d.getnVagas() + " Vagas - \n"; 
-		}
-		if (!jaAcabou()) {
-			status = "abertas";
-		}
-		else {
-			status = "encerradas";
-		}
-		
-		return titulo + dStr + "Inscrições " + status;
-		
-	}
+    @Override
+    public String toString() {
+        String tituloHeader = "- Edital de monitoria " + id + " - \n";
+        
+        StringBuilder dStr = new StringBuilder();
+        String status;
 
-	public long getId() {
-		return id;
-	}
+        for(Disciplina d: disciplinas) {
+            dStr.append(d.getNome()).append(" - Vagas - \n"); 
+        }
+        
+        if (!jaAcabou()) {
+            status = "abertas";
+        } else {
+            status = "encerradas";
+        }
+        
+        return tituloHeader + dStr.toString() + "Inscrições " + status;
+    }
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    public long getId() {
+        return id;
+    }
 
-	public String getnEdital() {
-		return nEdital;
-	}
+    public String getTitulo() {
+        return titulo;
+    }
 
-	public void setnEdital(String nEdital) {
-		this.nEdital = nEdital;
-	}
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
 
-	public LocalDate getInicioInscricoes() {
-		return inicioInscricoes;
-	}
+    public Date getInicioInscricoes() {
+        return inicioInscricoes;
+    }
 
-	public void setInicioInscricoes(LocalDate inicioInscricoes) {
-		this.inicioInscricoes = inicioInscricoes;
-	}
+    public void setInicioInscricoes(Date inicioInscricoes) {
+        this.inicioInscricoes = inicioInscricoes;
+    }
 
-	public LocalDate getFimInscricoes() {
-		return fimInscricoes;
-	}
+    public Date getFimInscricoes() {
+        return fimInscricoes;
+    }
 
-	public void setFimInscricoes(LocalDate fimInscricoes) {
-		this.fimInscricoes = fimInscricoes;
-	}
+    public void setFimInscricoes(Date fimInscricoes) {
+        this.fimInscricoes = fimInscricoes;
+    }
 
-	public List<Disciplina> getDisciplinas() {
-		return disciplinas;
-	}
+    public int getMaximoInscricoes() {
+        return maximoInscricoes;
+    }
 
-	public void setDisciplinas(List<Disciplina> disciplinas) {
-		this.disciplinas = disciplinas;
-	}
-	
-	
-	
-	public String getTitulo() {
-		return titulo;
-	}
+    public void setMaximoInscricoes(int maximoInscricoes) {
+        this.maximoInscricoes = maximoInscricoes;
+    }
 
-	public void setTitulo(String titulo) {
-		this.titulo = titulo;
-	}
+    public double getPesoCRE() {
+        return pesoCRE;
+    }
 
-	
-	
+    public void setPesoCRE(double pesoCRE) {
+        this.pesoCRE = pesoCRE;
+    }
+
+    public double getPesoMedia() {
+        return pesoMedia;
+    }
+
+    public void setPesoMedia(double pesoMedia) {
+        this.pesoMedia = pesoMedia;
+    }
+
+    public List<Disciplina> getDisciplinas() {
+        return disciplinas;
+    }
+
+    public void setDisciplinas(List<Disciplina> disciplinas) {
+        this.disciplinas = disciplinas;
+    }
 }

@@ -20,7 +20,7 @@ public class TelaCadastroCoordenador extends BaseTelas {
         
 		this.central = c;
 		this.p = p;
-        this.cadastro = new Cadastro(c);
+        this.cadastro = new Cadastro(this.central);
 
         // COMANDO MÁGICO: Transforma em tela cheia
         setTelaCheia(); 
@@ -70,7 +70,7 @@ public class TelaCadastroCoordenador extends BaseTelas {
         	
 
         	
-            JOptionPane.showMessageDialog(this, "Cadastro realizado! Abrindo sistema...");
+            JOptionPane.showMessageDialog(this, "Cadastro realizado! Seu usuario é: " + central.getCoodernador().getUsuario());
             this.salvar(e);
 
 

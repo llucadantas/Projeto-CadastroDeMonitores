@@ -5,12 +5,7 @@ import java.util.regex.Pattern;
 
 public class Validacao {
 	
-	public static void validacaoSenha(String senha) throws ValidacaoException {
-		if(senha.length() < 7 ) {
-			throw new ValidacaoException("Senha menor que 7 caracteres.");
-		}
-	
-	}
+
 	
 	private static final String EMAIL_REGEX = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$";
 	
@@ -27,5 +22,24 @@ public class Validacao {
         	throw new ValidacaoException("Email fora de padrão.");
         }
     }
+	
+	public static void validacaoSenha(String senha) throws ValidacaoException {
+		if(senha.length() < 7 ) {
+			throw new ValidacaoException("Senha menor que 7 caracteres.");
+		}
+	
+	}
+	
+	public static void senhaIgual(String s1, String s2) throws ValidacaoException {
+		if(!s1.equals(s2)) {
+			throw new ValidacaoException("As duas senhas nao conhecidem.");
+		}
+	}
+	
+	public static void nome(String n) throws ValidacaoException{
+		if(n.isEmpty()) {
+			throw new ValidacaoException("Digite seu nome.");
+		}
+	}
 	
 }

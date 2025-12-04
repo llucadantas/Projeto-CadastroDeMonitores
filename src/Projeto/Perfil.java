@@ -12,15 +12,38 @@ public class Perfil extends BaseTelas {
     private JTextField txtLogin;
     private JPasswordField txtNovaSenha;
     private JPasswordField txtConfirmaSenha;
-
-    public Perfil() {
+    private CentralDeInformacoes c;
+    private Pessoa pessoa;
+    private String matricula;
+    private Persistencia p;
+    
+    public Perfil(CentralDeInformacoes central, boolean isCoordenador, String m, Persistencia p) {
         super("Meu Perfil", 500, 520);
         // DISPOSE_ON_CLOSE é vital aqui: fecha só esta janela, não o programa todo
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        this.c = central;
+        this.matricula = m;
+        this.p = p;
+        
+        if(isCoordenador) {
+            this.pessoa = c.getCoodernador();
+        }
+        else {
+            this.pessoa = c.recuperarAlunoPorMatricula(matricula);
+        }
+        
+        if (this.pessoa != null) {
+            montarTela();
+        }
     }
 
     @Override
     protected void montarTela() {
+    	
+    	if (this.pessoa == null) {
+            return;
+        }
+
         // --- SEÇÃO 1: DADOS PESSOAIS ---
         JLabel lblDados = criarLabel("Dados Pessoais", 30, 20, 200, 30);
         estilizar(lblDados, 16, true);
@@ -28,15 +51,18 @@ public class Perfil extends BaseTelas {
 
         criarLabel("Nome Completo:", 30, 60, 150, 20);
         txtNome = criarCampoTexto(30, 80, 420, 30);
-        txtNome.setText("Coordenador Carlos"); 
+        txtNome.setText(pessoa.getNome()); 
 
         criarLabel("E-mail Institucional:", 30, 120, 150, 20);
         txtEmail = criarCampoTexto(30, 140, 420, 30);
-        txtEmail.setText("carlos.coord@faculdade.edu.br");
+        txtEmail.setText(pessoa.getEmail());
 
         criarLabel("Login (Imutável):", 30, 180, 150, 20);
         txtLogin = criarCampoTexto(30, 200, 200, 30);
-        txtLogin.setText("admin.carlos");
+       
+        if(pessoa.isCoodernador()) {txtLogin.setText(String.valueOf(pessoa.getUsuario()));}
+        else {txtLogin.setText(this.matricula);}
+
         txtLogin.setEditable(false);
         txtLogin.setBackground(new Color(230, 230, 230));
         txtLogin.setForeground(Color.GRAY);
@@ -53,6 +79,7 @@ public class Perfil extends BaseTelas {
 
         criarLabel("Nova Senha:", 30, 310, 150, 20);
         txtNovaSenha = criarCampoSenha(30, 330, 200, 30);
+        
 
         criarLabel("Confirmar Senha:", 250, 310, 150, 20);
         txtConfirmaSenha = criarCampoSenha(250, 330, 200, 30);
@@ -86,47 +113,37 @@ public class Perfil extends BaseTelas {
      * Separá-lo do listener deixa o código mais limpo (Clean Code).
      */
     private void executarSalvar() {
+
         // 1. Captura os dados
         String nome = txtNome.getText().trim();
         String email = txtEmail.getText().trim();
         String s1 = new String(txtNovaSenha.getPassword());
         String s2 = new String(txtConfirmaSenha.getPassword());
 
-      
-        if (nome.isEmpty() || email.isEmpty()) {
-            JOptionPane.showMessageDialog(this, 
-                "Por favor, preencha Nome e E-mail.", 
-                "Campo Obrigatório", 
-                JOptionPane.WARNING_MESSAGE);
-            return; // Para a execução aqui
+        try {
+            Validacao.isEmailValido(email);
+            Validacao.nome(nome);
+            if (!s1.isEmpty() || !s2.isEmpty()) {
+                Validacao.senhaIgual(s1, s2);
+                Validacao.validacaoSenha(s1);
+                pessoa.setSenha(s1);
+                }
+
+            pessoa.setEmail(email);
+            pessoa.setNome(nome);
+            
+            
+            p.salvarCentral(c);
+            
+            JOptionPane.showConfirmDialog(this, "Atualizado com sucesso!");
+            dispose();
+            
+        }
+        catch(ValidacaoException ex){
+        	JOptionPane.showMessageDialog(this, ex.getMessage());
         }
 
        
-        if (!s1.isEmpty() || !s2.isEmpty()) {
-            if (!s1.equals(s2)) {
-                JOptionPane.showMessageDialog(this, 
-                    "As senhas digitadas não conferem!", 
-                    "Erro de Senha", 
-                    JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            if (s1.length() < 4) {
-                JOptionPane.showMessageDialog(this, 
-                    "A senha deve ter no mínimo 4 caracteres.", 
-                    "Senha Curta", 
-                    JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-        }
-
         
-        System.out.println("UPDATE Usuario SET nome='" + nome + "' WHERE login='admin.carlos'");
-        
-        JOptionPane.showMessageDialog(this, 
-            "Dados do perfil atualizados com sucesso!", 
-            "Sucesso", 
-            JOptionPane.INFORMATION_MESSAGE);
-
-        dispose(); 
     }
 }

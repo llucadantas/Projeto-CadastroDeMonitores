@@ -13,7 +13,6 @@ import javax.swing.UIManager;
 public class Main2 {
 
 	public static void main(String[] args) {
-        // Inicialização do Look and Feel para GUI
         try { 
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); 
         } catch (Exception ignored) {}

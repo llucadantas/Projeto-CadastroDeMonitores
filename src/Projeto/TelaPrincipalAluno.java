@@ -4,21 +4,20 @@ import java.awt.Color;
 
 import javax.swing.JButton;
 
-public class TelaPrincipalCoordenador extends TelaPrincipalBase {
+public class TelaPrincipalAluno extends TelaPrincipalBase {
 	
-    public TelaPrincipalCoordenador(CentralDeInformacoes central, Persistencia p) {
-        super("Painel do Coordenador", central, p);
+	private String matricula;
+	
+    public TelaPrincipalAluno(CentralDeInformacoes central, String m, Persistencia p) {
+        super("Painel do Aluno: " + central.recuperarAlunoPorMatricula(m).getNome(), central, p);
+        this.matricula = m;
     }
     
-    public void cadastroEdital() {
-    	dispose();
-    	new TelaCadastroEdital(central, p);
-    }
     
     @Override
     protected void montarConteudoEspecifico() {
     	
-        JButton btnPerfil = criarBotao("Perfil", 870, 30, 60, 20, e -> new Perfil(central, true, "", p));
+        JButton btnPerfil = criarBotao("Perfil", 870, 30, 60, 20, e -> new Perfil(central, false, matricula, p));
         estilizar(btnPerfil, 10, false);
         btnPerfil.setBackground(new Color(230, 230, 230));
     	
@@ -26,9 +25,10 @@ public class TelaPrincipalCoordenador extends TelaPrincipalBase {
         criarBotao("Gerenciar Editais", 30, 120, 180, 40, e -> System.out.println("Abrir Gerenciamento de Editais"));
     	
         // 2. Ação específica: Botão Novo Edital
-        JButton btnNovoEdital = criarBotao("Novo Edital", 730, 510, 120, 35, e -> cadastroEdital());
+        JButton btnNovoEdital = criarBotao("Inscrever-se", 730, 510, 120, 35, e -> setForeground(Color.BLACK));
+
         btnNovoEdital.setBackground(new Color(0, 153, 76)); 
-        btnNovoEdital.setForeground(Color.BLACK);
+        btnNovoEdital.setForeground(Color.WHITE);
         
         // A tabela de editais (JTable) e o modelo (model) já foram criados e populados
         // pelo método montarTabelaEditais() na classe pai.

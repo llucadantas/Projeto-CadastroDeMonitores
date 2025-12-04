@@ -67,7 +67,7 @@ public class TelaCadastroAluno extends BaseTelas {
     }
     
     private void validarECadastrar(ActionEvent e) {
-        String usuario = txtMatricula.getText();
+        String matricula = txtMatricula.getText();
         String senha = new String(txtSenha.getPassword());
         String email = txtEmail.getText();
         String nome = txtNome.getText();
@@ -77,9 +77,9 @@ public class TelaCadastroAluno extends BaseTelas {
         	
         	Validacao.validacaoSenha(senha);
         	Validacao.isEmailValido(email);
-        	cadastro.cadastrarAluno(usuario, senha, nome, email);
+        	cadastro.cadastrarAluno(matricula, senha, nome, email);
 
-            JOptionPane.showMessageDialog(this, "Cadastro realizado! Abrindo sistema...");
+            JOptionPane.showMessageDialog(this, "Cadastro realizado!");
             this.salvar(e);
 
 

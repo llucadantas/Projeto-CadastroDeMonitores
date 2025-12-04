@@ -13,11 +13,11 @@ public class TelaLogin extends BaseTelas {
     private JPasswordField txtSenha;
     private Login login;
     private Persistencia p;
-    private CentralDeInformacoes c;
+    private CentralDeInformacoes central;
 
     public TelaLogin(CentralDeInformacoes c, Persistencia p) {
         super("Acesso Restrito", 350, 400);
-        this.c = c;
+        this.central = c;
         this.p = p;
         this.login = new Login(c);
         
@@ -54,13 +54,21 @@ public class TelaLogin extends BaseTelas {
     
     private void telaCadastro(ActionEvent e) {
     	this.dispose();
-    	new TelaCadastroAluno(c, p);
+    	new TelaCadastroAluno(central, p);
     }
 
     
     private void validarELogar(ActionEvent e) {
-        String usuario = txtUsuario.getText();
-        String senha = new String(txtSenha.getPassword());
+    	long usuarioC = 0;
+    	try {
+    		usuarioC = Long.parseLong(getTxtUsuario());
+
+    	}
+    	catch(Exception ex) {
+    		return;
+    	}
+        String usuario = getTxtUsuario();
+        String senha = new String(getTxtSenha());
 
         if (usuario.trim().isEmpty() || senha.trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Preencha todos os campos.");
@@ -68,7 +76,7 @@ public class TelaLogin extends BaseTelas {
             return;
         }
         
-        if (login.loginCoodernador(usuario, senha)) {
+        if (login.loginCoodernador(usuarioC, senha)) {
             
 
             JOptionPane.showMessageDialog(this, "Login realizado como Coodernador! Abrindo sistema...");
@@ -77,13 +85,17 @@ public class TelaLogin extends BaseTelas {
 
             this.dispose(); 
             
-            new TelaPrincipalCoordenador(c);
+            central = p.recuperarCentral();
+            
+            new TelaPrincipalCoordenador(this.central, this.p);
 
         } else if (login.login(usuario, senha)){
         	
-            JOptionPane.showMessageDialog(this, "Login realizado como Coodernador! Abrindo sistema...");
+            JOptionPane.showMessageDialog(this, "Login realizado! Abrindo sistema...");
             
-          
+            central = p.recuperarCentral();
+            new TelaPrincipalAluno(this.central, usuario, this.p);
+
         }
         else {
             JOptionPane.showMessageDialog(this, "Usuário ou senha incorretos.", "Erro", JOptionPane.ERROR_MESSAGE);
