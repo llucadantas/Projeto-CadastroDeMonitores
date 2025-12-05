@@ -2,6 +2,7 @@ package Projeto;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.MaskFormatter;
 import java.awt.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -10,186 +11,186 @@ import java.util.Date;
 
 public class TelaCadastroEdital extends BaseTelas {
 
-    private JTextField campoDataInicio;
-    private JTextField campoDataFim;
+    private JTextField campoTitulo;
+    private JFormattedTextField campoDataInicio;
+    private JFormattedTextField campoDataFim;
     private JTextField campoMaxInscricoes;
     private JTextField campoPesoCRE;
     private JTextField campoPesoMedia;
-
     private JTextField campoNomeDisciplina;
     private JTextField campoVagasRemuneradas;
     private JTextField campoVagasVoluntarios;
 
     private DefaultTableModel tabelaModel;
-    private JTable tabela;
     private CentralDeInformacoes central;
     private Persistencia p;
     private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
+    // Variável para armazenar o edital se for EDIÇÃO (null se for novo)
+    private EditalDeMonitoria editalEdicao = null;
+
+    // CONSTRUTOR 1: Novo Cadastro
     public TelaCadastroEdital(CentralDeInformacoes c, Persistencia p) {
-        super("Cadastro de Edital de Monitoria", 750, 650);
+        super("Cadastro de Edital", 750, 700);
         this.central = c;
         this.p = p;
     }
 
+    // CONSTRUTOR 2: Edição (CORRIGE O ERRO DE CHAMADA)
+    public TelaCadastroEdital(CentralDeInformacoes c, Persistencia p, EditalDeMonitoria edital) {
+        super("Editar Edital", 750, 700);
+        this.central = c;
+        this.p = p;
+        this.editalEdicao = edital;
+        
+        // Preenche os dados nos campos
+        preencherDadosEdicao();
+    }
+
+    private void preencherDadosEdicao() {
+        if (editalEdicao == null) return;
+        
+        // Usamos invokeLater para garantir que os campos já existam visualmente (caso o super ainda esteja montando)
+        SwingUtilities.invokeLater(() -> {
+            if (campoTitulo != null) campoTitulo.setText(editalEdicao.getTitulo());
+            if (campoMaxInscricoes != null) campoMaxInscricoes.setText(String.valueOf(editalEdicao.getMaximoInscricoes()));
+            if (campoPesoCRE != null) campoPesoCRE.setText(String.valueOf(editalEdicao.getPesoCRE()));
+            if (campoPesoMedia != null) campoPesoMedia.setText(String.valueOf(editalEdicao.getPesoMedia()));
+            
+            if (editalEdicao.getInicioInscricoes() != null) 
+                campoDataInicio.setText(sdf.format(editalEdicao.getInicioInscricoes()));
+            if (editalEdicao.getFimInscricoes() != null) 
+                campoDataFim.setText(sdf.format(editalEdicao.getFimInscricoes()));
+    
+            if (tabelaModel != null) {
+                tabelaModel.setRowCount(0); // Limpa antes de adicionar
+                for (Disciplina d : editalEdicao.getDisciplinas()) {
+                    tabelaModel.addRow(new Object[]{ d.getNome(), d.getnVagasRem(), d.getnVagasVol() });
+                }
+            }
+        });
+    }
+
     @Override
     protected void montarTela() {
-
         painel.setLayout(null);
-
-        // --------------------------- TÍTULO ---------------------------
-        JLabel titulo = criarLabel("Cadastro de Edital de Monitoria", 0, 10, 750, 40);
+        String txtTitulo = (editalEdicao == null) ? "Cadastro de Edital" : "Editando Edital";
+        JLabel titulo = criarLabel(txtTitulo, 0, 10, 750, 40);
         titulo.setHorizontalAlignment(SwingConstants.CENTER);
         estilizar(titulo, 22, true);
 
-        // --------------------------- PAINEL DADOS GERAIS ---------------------------
+        // Painel Geral
         JPanel painelGeral = new JPanel(null);
-        painelGeral.setBounds(40, 70, 670, 140);
-        painelGeral.setBorder(BorderFactory.createTitledBorder("Informações do Edital"));
+        painelGeral.setBounds(40, 70, 670, 180);
+        painelGeral.setBorder(BorderFactory.createTitledBorder("Informações"));
         painel.add(painelGeral);
 
-        criarLabel("Data Início (dd/MM/yyyy):", 20, 30, 200, 25, painelGeral);
-        campoDataInicio = criarCampoTexto(200, 30, 150, 25, painelGeral);
+        criarLabel("Título:", 20, 30, 100, 25, painelGeral);
+        campoTitulo = criarCampoTexto(80, 30, 560, 25, painelGeral);
 
-        criarLabel("Data Fim (dd/MM/yyyy):", 370, 30, 200, 25, painelGeral);
-        campoDataFim = criarCampoTexto(520, 30, 120, 25, painelGeral);
+        try {
+            MaskFormatter mask = new MaskFormatter("##/##/####");
+            mask.setPlaceholderCharacter('_');
+            criarLabel("Início:", 20, 70, 50, 25, painelGeral);
+            campoDataInicio = new JFormattedTextField(mask);
+            campoDataInicio.setBounds(80, 70, 120, 25);
+            painelGeral.add(campoDataInicio);
+            
+            criarLabel("Fim:", 220, 70, 50, 25, painelGeral);
+            campoDataFim = new JFormattedTextField(mask);
+            campoDataFim.setBounds(260, 70, 120, 25);
+            painelGeral.add(campoDataFim);
+        } catch (Exception e) {}
 
-        criarLabel("Máx. inscrições por aluno:", 20, 70, 200, 25, painelGeral);
-        campoMaxInscricoes = criarCampoTexto(200, 70, 80, 25, painelGeral);
+        criarLabel("Máx. Insc.:", 400, 70, 80, 25, painelGeral);
+        campoMaxInscricoes = criarCampoTexto(480, 70, 60, 25, painelGeral);
 
-        // --------------------------- PAINEL PESOS ---------------------------
+        // Painel Pesos
         JPanel painelPesos = new JPanel(null);
-        painelPesos.setBounds(40, 220, 670, 100);
-        painelPesos.setBorder(BorderFactory.createTitledBorder("Pesos da Fórmula"));
+        painelPesos.setBounds(40, 260, 670, 80);
+        painelPesos.setBorder(BorderFactory.createTitledBorder("Pesos (Soma 1.0)"));
         painel.add(painelPesos);
+        
+        criarLabel("Peso CRE:", 20, 30, 80, 25, painelPesos);
+        campoPesoCRE = criarCampoTexto(100, 30, 80, 25, painelPesos);
+        criarLabel("Peso Média:", 200, 30, 80, 25, painelPesos);
+        campoPesoMedia = criarCampoTexto(290, 30, 80, 25, painelPesos);
 
-        criarLabel("Peso CRE:", 20, 30, 150, 25, painelPesos);
-        campoPesoCRE = criarCampoTexto(120, 30, 80, 25, painelPesos);
-
-        criarLabel("Peso Média:", 240, 30, 150, 25, painelPesos);
-        campoPesoMedia = criarCampoTexto(350, 30, 80, 25, painelPesos);
-
-        JLabel aviso = criarLabel("(A soma dos pesos deve ser 1.0)", 450, 30, 200, 25, painelPesos);
-        aviso.setForeground(Color.DARK_GRAY);
-
-        // --------------------------- PAINEL DISCIPLINAS ---------------------------
+        // Painel Disciplinas
         JPanel painelDisc = new JPanel(null);
-        painelDisc.setBounds(40, 330, 670, 110);
-        painelDisc.setBorder(BorderFactory.createTitledBorder("Adicionar Disciplina"));
+        painelDisc.setBounds(40, 350, 670, 80);
+        painelDisc.setBorder(BorderFactory.createTitledBorder("Nova Disciplina"));
         painel.add(painelDisc);
+        
+        criarLabel("Nome:", 10, 30, 50, 25, painelDisc);
+        campoNomeDisciplina = criarCampoTexto(60, 30, 200, 25, painelDisc);
+        criarLabel("Rem:", 270, 30, 40, 25, painelDisc);
+        campoVagasRemuneradas = criarCampoTexto(310, 30, 40, 25, painelDisc);
+        criarLabel("Vol:", 360, 30, 40, 25, painelDisc);
+        campoVagasVoluntarios = criarCampoTexto(400, 30, 40, 25, painelDisc);
+        
+        criarBotao("Add", 460, 28, 80, 30, e -> adicionarDisciplina(), painelDisc);
 
-        criarLabel("Nome:", 20, 30, 100, 25, painelDisc);
-        campoNomeDisciplina = criarCampoTexto(80, 30, 200, 25, painelDisc);
-
-        criarLabel("Vagas Rem.:", 300, 30, 100, 25, painelDisc);
-        campoVagasRemuneradas = criarCampoTexto(390, 30, 70, 25, painelDisc);
-
-        criarLabel("Vagas Vol.:", 480, 30, 100, 25, painelDisc);
-        campoVagasVoluntarios = criarCampoTexto(560, 30, 70, 25, painelDisc);
-
-        criarBotao("Adicionar", 520, 65, 120, 30, e -> adicionarDisciplina(), painelDisc);
-
-        // --------------------------- TABELA ---------------------------
-        tabelaModel = new DefaultTableModel(new String[]{"Disciplina", "Remuneradas", "Voluntários"}, 0);
-        tabela = new JTable(tabelaModel);
-        tabela.setRowHeight(22);
-
-        JScrollPane scroll = new JScrollPane(tabela);
-        scroll.setBounds(40, 450, 670, 130);
+        // Tabela
+        tabelaModel = new DefaultTableModel(new String[]{"Disciplina", "Rem", "Vol"}, 0);
+        JScrollPane scroll = new JScrollPane(new JTable(tabelaModel));
+        scroll.setBounds(40, 440, 670, 180);
         painel.add(scroll);
 
-        // --------------------------- BOTÃO SALVAR ---------------------------
-        criarBotao("Salvar Edital", 300, 590, 180, 40, e -> salvarEdital());
+        // Botões Finais
+        String btnTxt = (editalEdicao == null) ? "Salvar" : "Atualizar";
+        criarBotao(btnTxt, 250, 630, 150, 40, e -> salvar());
+        criarBotao("Cancelar", 420, 630, 120, 40, e -> dispose());
         
-        criarBotao("Fechar", 500, 590, 120, 40, e -> dispose());
-
         setTelaCheia();
-    }
-
-    // ======================================================================
-    // -------------------------- FUNÇÕES ----------------------------------
-    // ======================================================================
-
-    private void adicionarDisciplina() {
-        String nome = campoNomeDisciplina.getText();
-        String r = campoVagasRemuneradas.getText();
-        String v = campoVagasVoluntarios.getText();
-
-        if (nome.isEmpty() || r.isEmpty() || v.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Preencha todos os campos da disciplina!");
-            return;
-        }
         
+        // Se for edição, chama o preenchimento aqui também para garantir
+        if(editalEdicao != null) preencherDadosEdicao();
+    }
+    
+    private void adicionarDisciplina() {
         try {
-            Integer.parseInt(r);
-            Integer.parseInt(v);
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Vagas devem ser numéricas!");
-            return;
-        }
-
-        tabelaModel.addRow(new Object[]{nome, r, v});
-
-        campoNomeDisciplina.setText("");
-        campoVagasRemuneradas.setText("");
-        campoVagasVoluntarios.setText("");
+            String n = campoNomeDisciplina.getText();
+            int r = Integer.parseInt(campoVagasRemuneradas.getText());
+            int v = Integer.parseInt(campoVagasVoluntarios.getText());
+            if (!n.isEmpty()) {
+                tabelaModel.addRow(new Object[]{n, r, v});
+                campoNomeDisciplina.setText(""); campoVagasRemuneradas.setText(""); campoVagasVoluntarios.setText("");
+            }
+        } catch (Exception e) { JOptionPane.showMessageDialog(this, "Erro nas vagas"); }
     }
 
-    private void salvarEdital() {
+    private void salvar() {
         try {
-            Date inicio = sdf.parse(campoDataInicio.getText());
-            Date fim = sdf.parse(campoDataFim.getText());
-
-            if (fim.before(inicio)) {
-                JOptionPane.showMessageDialog(this, "A data fim deve ser depois da data início!");
-                return;
-            }
-
+            String titulo = campoTitulo.getText();
+            Date i = sdf.parse(campoDataInicio.getText());
+            Date f = sdf.parse(campoDataFim.getText());
             int max = Integer.parseInt(campoMaxInscricoes.getText());
-            double pesoCRE = Double.parseDouble(campoPesoCRE.getText());
-            double pesoMedia = Double.parseDouble(campoPesoMedia.getText());
-
-            if (pesoCRE + pesoMedia != 1.0) {
-                JOptionPane.showMessageDialog(this, "A soma dos pesos deve ser exatamente 1.0!");
-                return;
+            double p1 = Double.parseDouble(campoPesoCRE.getText());
+            double p2 = Double.parseDouble(campoPesoMedia.getText());
+            
+            ArrayList<Disciplina> discs = new ArrayList<>();
+            for(int k=0; k<tabelaModel.getRowCount(); k++) {
+                discs.add(new Disciplina(
+                    (String)tabelaModel.getValueAt(k,0),
+                    Integer.parseInt(tabelaModel.getValueAt(k,1).toString()),
+                    Integer.parseInt(tabelaModel.getValueAt(k,2).toString())
+                ));
             }
 
-            if (tabelaModel.getRowCount() == 0) {
-                JOptionPane.showMessageDialog(this, "Adicione pelo menos uma disciplina!");
-                return;
+            if (editalEdicao == null) {
+                // Novo Cadastro
+                central.adicionarEdital(new EditalDeMonitoria(titulo, i, f, max, p1, p2, discs));
+            } else {
+                // Atualização
+                editalEdicao.setTitulo(titulo); editalEdicao.setInicioInscricoes(i); editalEdicao.setFimInscricoes(f);
+                editalEdicao.setMaximoInscricoes(max);; editalEdicao.setPesoCRE(p1); editalEdicao.setPesoMedia(p2);
+                editalEdicao.setDisciplinas(discs);
             }
-            
-            ArrayList<Disciplina> disciplinas = new ArrayList<>();
-            
-         // Percorre todas as linhas
-            for (int i = 0; i < tabelaModel.getRowCount(); i++) {
-                
-                // Pega o valor da coluna 0 (ex: Nome) da linha atual 'i'
-                // O retorno é Object, então você deve fazer o cast (converter)
-                String nome = (String) tabelaModel.getValueAt(i, 0);
-                
-                // Pega o valor da coluna 1 (ex: Email)
-                int r = Integer.parseInt(tabelaModel.getValueAt(i, 1).toString());
-                int v = Integer.parseInt(tabelaModel.getValueAt(i, 2).toString());
-                
-                Disciplina d = new Disciplina(nome, r, v);
-                
-                disciplinas.add(d);
-            }
-
-            EditalDeMonitoria edital = new EditalDeMonitoria("",inicio, fim, max, pesoMedia, pesoMedia, disciplinas);
-            
-            central.adicionarEdital(edital);
             p.salvarCentral(central);
-            JOptionPane.showMessageDialog(this, "Cadastro realizado com sucesso!");
+            JOptionPane.showMessageDialog(this, "Salvo com Sucesso!");
             dispose();
-            new TelaPrincipalCoordenador(central, p);
-            
-        } catch (ParseException e) {
-            JOptionPane.showMessageDialog(this, "Datas inválidas! Use o formato dd/MM/yyyy.");
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Campos numéricos inválidos!");
-        }
+            new TelaPrincipalCoordenador(central, p); // Recarrega a tela principal
+        } catch (Exception e) { JOptionPane.showMessageDialog(this, "Erro: " + e.getMessage()); }
     }
-
 }

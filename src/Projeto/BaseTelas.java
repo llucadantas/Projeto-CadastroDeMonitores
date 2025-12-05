@@ -1,6 +1,8 @@
 package Projeto;
 
 import javax.swing.*;
+import javax.swing.text.MaskFormatter;
+
 import java.awt.*;
 import java.awt.event.ActionListener;
 
@@ -124,5 +126,24 @@ public abstract class BaseTelas extends JFrame {
     protected void estilizar(JComponent componente, int tamanho, boolean negrito) {
         int estilo = negrito ? Font.BOLD : Font.PLAIN;
         componente.setFont(new Font("Arial", estilo, tamanho));
+    }
+    
+    protected JFormattedTextField criarCampoData(int x, int y, int w, int h) {
+        JFormattedTextField campo = null;
+        try {
+            // Define a máscara: # representa apenas números
+            MaskFormatter mascara = new MaskFormatter("##/##/####");
+            mascara.setPlaceholderCharacter('_'); // Mostra ____ nas partes vazias
+            
+            campo = new JFormattedTextField(mascara);
+            campo.setBounds(x, y, w, h);
+            
+            // Adiciona ao painel (assumindo que sua BaseTelas tem a variável 'painel')
+            painel.add(campo);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return campo;
     }
 }

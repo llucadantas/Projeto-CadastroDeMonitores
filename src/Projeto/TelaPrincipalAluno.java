@@ -3,14 +3,40 @@ package Projeto;
 import java.awt.Color;
 
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 
 public class TelaPrincipalAluno extends TelaPrincipalBase {
 	
 	private String matricula;
 	
+	
     public TelaPrincipalAluno(CentralDeInformacoes central, String m, Persistencia p) {
         super("Painel do Aluno: " + central.recuperarAlunoPorMatricula(m).getNome(), central, p);
         this.matricula = m;
+    }
+    
+    private void verEditalSelecionado() {
+        int linha = tabela.getSelectedRow();
+        if (linha == -1) {
+            JOptionPane.showMessageDialog(this, "Selecione um edital para visualizar.");
+            return;
+        }
+
+        long idEdital = (Long) model.getValueAt(linha, 0);
+        EditalDeMonitoria editalSelecionado = buscarEditalPorId(idEdital);
+        
+        if (editalSelecionado != null) {
+            new TelaDetalhesEdital(this, editalSelecionado);
+        }
+    }
+    
+    private EditalDeMonitoria buscarEditalPorId(long id) {
+        for(EditalDeMonitoria e : central.getTodosEditais()) {
+            if(e.getId() == id) {
+                return e;
+            }
+        }
+        return null;
     }
     
     
@@ -28,7 +54,11 @@ public class TelaPrincipalAluno extends TelaPrincipalBase {
         JButton btnNovoEdital = criarBotao("Inscrever-se", 730, 510, 120, 35, e -> setForeground(Color.BLACK));
 
         btnNovoEdital.setBackground(new Color(0, 153, 76)); 
-        btnNovoEdital.setForeground(Color.WHITE);
+        btnNovoEdital.setForeground(Color.BLACK);
+        
+        JButton btnVer = criarBotao("Ver Detalhes", 250, 510, 120, 35, e -> verEditalSelecionado());
+        btnVer.setBackground(new Color(255, 140, 0)); // Laranja
+        btnVer.setForeground(Color.BLACK);
         
         // A tabela de editais (JTable) e o modelo (model) já foram criados e populados
         // pelo método montarTabelaEditais() na classe pai.

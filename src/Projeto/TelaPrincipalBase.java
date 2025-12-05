@@ -2,8 +2,6 @@ package Projeto;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -11,7 +9,8 @@ import javax.swing.table.DefaultTableModel;
 public abstract class TelaPrincipalBase extends BaseTelas {
 	
 	protected CentralDeInformacoes central;
-	protected DefaultTableModel model;// MUDANÇA: O modelo da tabela agora é ATRIBUTO da base
+	protected DefaultTableModel model;
+    protected JTable tabela; // AJUSTE: Necessário ser atributo para as classes filhas acessarem (ex: getSelectedRow)
 	protected Persistencia p;
 	
 	protected static final int LARGURA_MENU = 210;
@@ -24,37 +23,46 @@ public abstract class TelaPrincipalBase extends BaseTelas {
         this.central = central;
         this.p = p;
         
-        setTelaCheia(); 
+        // Define layout nulo para posicionamento absoluto
+        setLayout(null);
+        getContentPane().setBackground(new Color(245, 245, 250));
+        
+        // setTelaCheia(); // Opcional: Se quiser iniciar maximizado
         
         montarBase(); 
-        montarTabelaEditais(); // NOVO PASSO: Monta a tabela em todas as telas
+        montarTabelaEditais(); 
         montarConteudoEspecifico();
+        
+        revalidate();
+        repaint();
+        setVisible(true);
     }
     
-    // Método abstrato: O que muda (botões e funcionalidades) entre o coordenador e o aluno.
+    // Método abstrato: O que muda entre coordenador e aluno
     protected abstract void montarConteudoEspecifico();
     
-    // Método final que define a estrutura comum de botões e menu (IDÊNTICO AO ANTERIOR)
     private final void montarBase() {
-
+        // Botão de Logout
         criarBotaoLink("Sair / Logout", 850, 60, 100, 20, e -> {
             int resposta = JOptionPane.showConfirmDialog(this, "Deseja realmente sair?", "Logout", JOptionPane.YES_NO_OPTION);
-            if (resposta == JOptionPane.YES_OPTION) { dispose(); }
+            if (resposta == JOptionPane.YES_OPTION) { 
+                dispose(); 
+                new TelaLogin(central, p);
+            }
         });
 
+        // Título do Menu
         JLabel lblMenu = criarLabel("Menu Principal", 30, 80, 200, 30);
         estilizar(lblMenu, 16, true);
         lblMenu.setForeground(new Color(0, 102, 204));
         
+        // Separador Visual
         JSeparator separator = new JSeparator(SwingConstants.VERTICAL);
         separator.setBounds(LARGURA_MENU, 20, 2, 600);
         separator.setForeground(Color.LIGHT_GRAY);
         painel.add(separator);
     }
 
-    /**
-     * NOVO MÉTODO: Cria o modelo, a JTable e carrega os dados comuns.
-     */
     protected void montarTabelaEditais() {
         
         JLabel lblTituloLista = criarLabel("Editais Recentes", X_CONTEUDO, Y_TOPO, 300, 30);
@@ -62,7 +70,7 @@ public abstract class TelaPrincipalBase extends BaseTelas {
 
         String[] colunas = {"ID", "Título do Edital", "Data Início", "Data Fim", "Status"};
         
-        // Inicializa o ATRIBUTO 'model'
+        // Inicializa o model
         this.model = new DefaultTableModel(colunas, 0) {
              @Override
              public boolean isCellEditable(int row, int column) {
@@ -70,24 +78,31 @@ public abstract class TelaPrincipalBase extends BaseTelas {
              }
         };
 
-        JTable tabela = new JTable(this.model);
-        tabela.setRowHeight(25);
+        // Inicializa a tabela (atribuindo ao campo protected)
+        this.tabela = new JTable(this.model);
+        tabela.setRowHeight(30);
         tabela.getTableHeader().setFont(new Font("Arial", Font.BOLD, 12));
         tabela.getTableHeader().setBackground(new Color(230, 230, 230));
 
         JScrollPane scrollPane = new JScrollPane(tabela);
-        scrollPane.setBounds(X_CONTEUDO, TABELA_Y_START, 600, 350);
+        scrollPane.setBounds(X_CONTEUDO, TABELA_Y_START, 680, 350); // Ajustei largura para 680
         painel.add(scrollPane);
         
-        // Carrega os dados
-        if(central != null) {
-            carregarDadosEditais(central.getTodosEditais()); 
-        }
+        // Carrega dados iniciais
+        carregarDadosTabela();
     }
     
     /**
-     * MUDANÇA: O método de carregamento agora vive na classe base.
+     * Método auxiliar chamado pelos botões de atualização das classes filhas.
      */
+    protected void carregarDadosTabela() {
+        if(central != null) {
+            carregarDadosEditais(central.getTodosEditais());
+        }
+    }
+    
+    
+    
     protected void carregarDadosEditais(List<EditalDeMonitoria> listaEditais) {
         if (model == null) { return; } 
         
@@ -95,7 +110,15 @@ public abstract class TelaPrincipalBase extends BaseTelas {
         
         for (EditalDeMonitoria edital : listaEditais) {
             try {
-                model.addRow(edital.toObjectArray()); 
+                // Monta a linha manualmente para garantir que funcione mesmo sem toObjectArray()
+                Object[] linha = new Object[] {
+                    edital.getId(),
+                    edital.getTitulo() != null ? edital.getTitulo() : "Edital " + edital.getId(),
+                    edital.getInicioInscricoes(),
+                    edital.getFimInscricoes(),
+                    "Ativo"
+                };
+                model.addRow(linha); 
             } catch (Exception e) {
                 System.err.println("Erro ao adicionar edital à tabela: " + e.getMessage());
             }
@@ -104,6 +127,6 @@ public abstract class TelaPrincipalBase extends BaseTelas {
 
     @Override
     protected void montarTela() {
-    	// Template Method: A lógica está em montarBase() e montarConteudoEspecifico()
+    	// A lógica principal foi movida para o construtor para seguir a ordem correta
     }
 }

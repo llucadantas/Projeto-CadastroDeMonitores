@@ -71,6 +71,7 @@ public class TelaCadastroAluno extends BaseTelas {
         String senha = new String(txtSenha.getPassword());
         String email = txtEmail.getText();
         String nome = txtNome.getText();
+        
 
         
         try {
