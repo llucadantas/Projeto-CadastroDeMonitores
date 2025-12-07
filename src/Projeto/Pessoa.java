@@ -6,15 +6,7 @@ public abstract class Pessoa {
 	public String nome;
 	public String email;
 	public String senha;
-	private long id = System.currentTimeMillis() % 1000000;;	
 	
-	public long getUsuario() {
-		return id;
-	}
-
-	public void setUsuario(long usuario) {
-		this.id = usuario;
-	}
 
 	public boolean isCoodernador;
 

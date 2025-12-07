@@ -32,7 +32,7 @@ public class TelaLogin extends BaseTelas {
         estilizar(lblTitulo, 20, true);
 
      
-        JLabel lblUser = criarLabel("Usuário:", 45, 70, 80, 25);
+        JLabel lblUser = criarLabel("Email:", 45, 70, 80, 25);
         estilizar(lblUser, 12, true); 
         txtUsuario = criarCampoTexto(100, 70, 170, 25);
 
@@ -59,14 +59,8 @@ public class TelaLogin extends BaseTelas {
 
     
     private void validarELogar(ActionEvent e) {
-    	long usuarioC = 0;
-    	try {
-    		usuarioC = Long.parseLong(getTxtUsuario());
+    	
 
-    	}
-    	catch(Exception ex) {
-    		return;
-    	}
         String usuario = getTxtUsuario();
         String senha = new String(getTxtSenha());
 
@@ -76,7 +70,7 @@ public class TelaLogin extends BaseTelas {
             return;
         }
         
-        if (login.loginCoodernador(usuarioC, senha)) {
+        if (login.loginCoodernador(usuario, senha)) {
             
 
             JOptionPane.showMessageDialog(this, "Login realizado como Coodernador! Abrindo sistema...");

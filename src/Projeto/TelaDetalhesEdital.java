@@ -10,6 +10,9 @@ public class TelaDetalhesEdital extends JDialog {
 
     private final Color COR_FUNDO = Color.WHITE;
     private final Color COR_PRIMARIA = new Color(0, 102, 204); // Azul
+    // 🎨 Nova cor para o botão de ação (Gerar Resultado)
+    private final Color COR_ACAO = new Color(76, 175, 80); // Verde
+    
     private final Font FONTE_TITULO = new Font("Segoe UI", Font.BOLD, 18);
     private final Font FONTE_LABEL = new Font("Segoe UI", Font.BOLD, 12);
     private final Font FONTE_TEXTO = new Font("Segoe UI", Font.PLAIN, 12);
@@ -26,7 +29,7 @@ public class TelaDetalhesEdital extends JDialog {
 
         montarCabecalho(edital);
         montarCorpo(edital);
-        montarRodape();
+        montarRodape(); // Método modificado
         
         setVisible(true);
     }
@@ -114,20 +117,43 @@ public class TelaDetalhesEdital extends JDialog {
     }
 
     private void montarRodape() {
-        JPanel painelSul = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JPanel painelSul = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0)); // Adicionado 10px de hgap
         painelSul.setBackground(new Color(245, 245, 245));
         painelSul.setBorder(new EmptyBorder(10, 10, 10, 10));
-
+        
+        // --- 1. Botão Gerar Resultado (Novo) ---
+        
+        JButton btnGerarResultado = new JButton("Gerar Resultado");
+        btnGerarResultado.setFont(FONTE_LABEL);
+        btnGerarResultado.setBackground(COR_ACAO); // Usa a nova cor verde
+        btnGerarResultado.setForeground(Color.WHITE);
+        btnGerarResultado.setFocusPainted(false);
+        btnGerarResultado.setPreferredSize(new Dimension(150, 35));
+        
+        btnGerarResultado.addActionListener(e -> {
+            // Ação: Chamar seu método do back-end para gerar o resultado
+            // Exemplo de como você faria a chamada, que você já possui:
+            // GeradorDeResultados.gerar(edital); 
+            JOptionPane.showMessageDialog(this, 
+                "A função de Gerar Resultado foi chamada. Implemente aqui a chamada ao back-end.", 
+                "Ação de Geração", 
+                JOptionPane.INFORMATION_MESSAGE);
+        });
+        
+        // --- 2. Botão Fechar ---
         JButton btnFechar = new JButton("Fechar");
         btnFechar.setFont(FONTE_LABEL);
-        btnFechar.setBackground(new Color(100, 100, 100));
-        btnFechar.setForeground(Color.BLACK);
+        btnFechar.setBackground(new Color(100, 100, 100)); // Cor mais neutra/cinza
+        btnFechar.setForeground(Color.WHITE); // Corrigido para branco para melhor contraste
         btnFechar.setFocusPainted(false);
         btnFechar.setPreferredSize(new Dimension(100, 35));
         
         btnFechar.addActionListener(e -> dispose()); // Fecha a janela
-
+        
+        // Adiciona os botões no painel
+        painelSul.add(btnGerarResultado);
         painelSul.add(btnFechar);
+        
         add(painelSul, BorderLayout.SOUTH);
     }
 }

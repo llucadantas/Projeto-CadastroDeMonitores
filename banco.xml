@@ -1,38 +1,28 @@
 <Central>
-  <todosAlunos>
-    <Aluno>
-      <nome>aaa</nome>
-      <email>lucasaaa@gmail.com</email>
-      <senha>1234567</senha>
-      <id>717249</id>
-      <isCoodernador>false</isCoodernador>
-      <matricula>123</matricula>
-    </Aluno>
-  </todosAlunos>
+  <todosAlunos/>
   <todosEditais>
     <Edital>
-      <titulo>Lucas</titulo>
-      <inicioInscricoes>2006-12-13 02:00:00.0 UTC</inicioInscricoes>
-      <fimInscricoes>2025-12-13 03:00:00.0 UTC</fimInscricoes>
-      <maximoInscricoes>1</maximoInscricoes>
-      <pesoCRE>0.4</pesoCRE>
-      <pesoMedia>0.6</pesoMedia>
+      <titulo>a</titulo>
+      <inicioInscricoes>2025-12-13 03:00:00.0 UTC</inicioInscricoes>
+      <fimInscricoes>2025-12-20 03:00:00.0 UTC</fimInscricoes>
+      <maximoInscricoes>5</maximoInscricoes>
+      <pesoCRE>0.6</pesoCRE>
+      <pesoMedia>0.4</pesoMedia>
       <disciplinas>
         <Disciplina>
-          <nome>Matematica</nome>
-          <nVagasRem>11</nVagasRem>
+          <nome>a1</nome>
+          <nVagasRem>1</nVagasRem>
           <nVagasVol>1</nVagasVol>
           <alunos/>
         </Disciplina>
       </disciplinas>
-      <id>985715</id>
+      <id>805070</id>
     </Edital>
   </todosEditais>
   <coodernador>
-    <nome>lucas</nome>
+    <nome>Lucas</nome>
     <email>lucas@gmail.com</email>
-    <senha>13122006</senha>
-    <id>489899</id>
+    <senha>1234567</senha>
     <isCoodernador>true</isCoodernador>
   </coodernador>
 </Central>

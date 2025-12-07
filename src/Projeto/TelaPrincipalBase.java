@@ -116,7 +116,7 @@ public abstract class TelaPrincipalBase extends BaseTelas {
                     edital.getTitulo() != null ? edital.getTitulo() : "Edital " + edital.getId(),
                     edital.getInicioInscricoes(),
                     edital.getFimInscricoes(),
-                    "Ativo"
+                    edital.jaAcabou()
                 };
                 model.addRow(linha); 
             } catch (Exception e) {

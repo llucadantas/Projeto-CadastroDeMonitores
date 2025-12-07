@@ -42,4 +42,34 @@ public class Validacao {
 		}
 	}
 	
+	public static void matriculaExistente(String matricula, CentralDeInformacoes central) throws ValidacaoException{
+		Aluno a = null;
+		a = central.recuperarAlunoPorMatricula(matricula);
+		if(!(a == null)) {
+			throw new ValidacaoException("Matricula já existente;");
+		}
+	}
+	
+	public static void matriculaInvalida(String matricula) throws ValidacaoException {
+		if(matricula.length() != 7) {
+			throw new ValidacaoException("Matricula inválida");
+
+		}
+	}
+	
+	public static void emailExistente(String email, CentralDeInformacoes central) throws ValidacaoException{
+		Coodernador c = central.getCoodernador();
+		for(Aluno a: central.getTodosAlunos()) {
+			if(a.getEmail().equals(email)) {
+				throw new ValidacaoException("Email já existente.");
+			}
+		
+
+			}
+		if(c.getEmail().equals(email)) {
+			throw new ValidacaoException("Email já existente.");
+		}
+	
+	}
+	
 }

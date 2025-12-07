@@ -66,11 +66,12 @@ public class TelaCadastroCoordenador extends BaseTelas {
         	
     		cadastro.cadastrarCoordenador(senha, nome, email);
         	Validacao.validacaoSenha(senha);
+        	Validacao.emailExistente(email, central);
         	Validacao.isEmailValido(email);
         	
 
         	
-            JOptionPane.showMessageDialog(this, "Cadastro realizado! Seu usuario é: " + central.getCoodernador().getUsuario());
+            JOptionPane.showMessageDialog(this, "Cadastro realizado!");
             this.salvar(e);
 
 

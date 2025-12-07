@@ -52,22 +52,25 @@ public class Perfil extends BaseTelas {
         criarLabel("Nome Completo:", 30, 60, 150, 20);
         txtNome = criarCampoTexto(30, 80, 420, 30);
         txtNome.setText(pessoa.getNome()); 
-
-        criarLabel("E-mail Institucional:", 30, 120, 150, 20);
-        txtEmail = criarCampoTexto(30, 140, 420, 30);
-        txtEmail.setText(pessoa.getEmail());
-
-        criarLabel("Login (Imutável):", 30, 180, 150, 20);
-        txtLogin = criarCampoTexto(30, 200, 200, 30);
-       
-        if(pessoa.isCoodernador()) {txtLogin.setText(String.valueOf(pessoa.getUsuario()));}
-        else {txtLogin.setText(this.matricula);}
-
-        txtLogin.setEditable(false);
-        txtLogin.setBackground(new Color(230, 230, 230));
-        txtLogin.setForeground(Color.GRAY);
-
         
+        if(pessoa.isCoodernador()) {
+            criarLabel("Login (Imutável):", 30, 180, 150, 20);
+            txtLogin = criarCampoTexto(30, 200, 200, 30);
+            txtLogin.setText(pessoa.getEmail());
+            txtLogin.setEditable(false);
+            txtLogin.setBackground(new Color(230, 230, 230));
+            txtLogin.setForeground(Color.GRAY);
+        }
+        else {
+            criarLabel("E-mail Institucional:", 30, 120, 150, 20);
+            txtEmail = criarCampoTexto(30, 140, 420, 30);
+            txtEmail.setText(pessoa.getEmail());
+            criarLabel("Login (Imutável):", 30, 180, 150, 20);
+            txtLogin = criarCampoTexto(30, 200, 200, 30);
+            txtLogin.setText(matricula);
+            
+        }
+
         JSeparator sep = new JSeparator();
         sep.setBounds(30, 250, 420, 2);
         painel.add(sep);
@@ -84,9 +87,6 @@ public class Perfil extends BaseTelas {
         criarLabel("Confirmar Senha:", 250, 310, 150, 20);
         txtConfirmaSenha = criarCampoSenha(250, 330, 200, 30);
 
-        
-
-        
         JButton btnSalvar = criarBotao("Salvar Alterações", 30, 410, 200, 40, null); 
         // Adicionando o Listener manualmente para ficar claro
         btnSalvar.addActionListener(new ActionListener() {
@@ -95,7 +95,6 @@ public class Perfil extends BaseTelas {
                 executarSalvar();
             }
         });
-        
         btnSalvar.setBackground(new Color(0, 153, 76)); 
         btnSalvar.setForeground(Color.BLACK);
 

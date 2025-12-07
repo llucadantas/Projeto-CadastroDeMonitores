@@ -78,6 +78,9 @@ public class TelaCadastroAluno extends BaseTelas {
         	
         	Validacao.validacaoSenha(senha);
         	Validacao.isEmailValido(email);
+        	Validacao.emailExistente(email, central);
+        	Validacao.matriculaExistente(matricula, central);
+        	Validacao.matriculaInvalida(matricula);
         	cadastro.cadastrarAluno(matricula, senha, nome, email);
 
             JOptionPane.showMessageDialog(this, "Cadastro realizado!");
@@ -92,7 +95,7 @@ public class TelaCadastroAluno extends BaseTelas {
         catch(CadastroException | ValidacaoException ex) {
         	JOptionPane.showMessageDialog(this, ex.getMessage());
         }
-           
+            
         } 
     
 
