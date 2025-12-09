@@ -22,7 +22,6 @@ public class TelaCadastroAluno extends BaseTelas {
 		this.p = p;
         this.cadastro = new Cadastro(c);
 
-        // COMANDO MÁGICO: Transforma em tela cheia
         setTelaCheia(); 
     }
 
@@ -33,7 +32,6 @@ public class TelaCadastroAluno extends BaseTelas {
         lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
         estilizar(lblTitulo, 22, true);
 
-        // Seção 1
         JLabel lblSecao1 = criarLabel("Dados", 30, 60, 200, 20);
         estilizar(lblSecao1, 12, true);
         lblSecao1.setForeground(java.awt.Color.GRAY);
@@ -50,7 +48,6 @@ public class TelaCadastroAluno extends BaseTelas {
         criarLabel("Email:", 30, 210, 80, 25);
         txtEmail = criarCampoTexto(100, 210, 280, 25);
 
-        // Botões
         JButton btnSalvar = criarBotao("Salvar Cadastro", 50, 450, 160, 40, this::validarECadastrar);
         estilizar(btnSalvar, 14, true);
         btnSalvar.setForeground(new java.awt.Color(0, 100, 0));

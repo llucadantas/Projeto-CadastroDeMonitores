@@ -56,7 +56,6 @@ public class TelaInscricaoMonitoria extends BaseTelas {
             return;
         }
 
-        // Aqui você integra com o backend/DAO depois
         JOptionPane.showMessageDialog(this,
             "Inscrição enviada com sucesso!\n" +
             "Edital: " + idEdital + "\n" +

@@ -1,34 +1,38 @@
 package Projeto;
 
+import javax.swing.JOptionPane;
+
 public class Login {
 	
 	private CentralDeInformacoes central;
 	private Aluno user;
-	private Coodernador userCoodernador;
+	private Coordenador userCoordenador;
 	
 	public Login(CentralDeInformacoes c) {
 		this.central = c;
 	}
 	
-	public boolean login(String matricula, String senha) {
-	    
-	    user = central.recuperarAlunoPorMatricula(matricula);
-	    
-	    	    if (user != null) {
-	        
-	        if (user.getSenha().equals(senha) && user.getMatricula().equals(matricula)) { 
-	            return true; 
-	        }
-	    }
+	public boolean login(String email, String senha) {
+		Aluno a = central.recuperarAlunoPorEmail(email);
+		    if(!(a==null)) {
+		        if (a.getEmail().equals(email) && a.getSenha().equals(senha)) {
+		            this.user = a;
+		            return true;
+		        
+		    }
+		        return false;
+		    }
+		    return false;
+		    }
+		    
+		    
 
-	    return false;
-	}
 	
 	public boolean loginCoodernador(String email, String senha) {
-		userCoodernador = central.getCoodernador();
+		userCoordenador = central.getCoordenador();
 		
-		if(userCoodernador != null && userCoodernador.getEmail().equals(email)) {
-			if(userCoodernador.getSenha().equals(senha)) {
+		if(userCoordenador != null && userCoordenador.getEmail().equals(email)) {
+			if(userCoordenador.getSenha().equals(senha)) {
 				return true;
 			}
 		}

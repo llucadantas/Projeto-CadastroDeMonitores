@@ -16,24 +16,21 @@ public class TelaCadastroCoordenador extends BaseTelas {
 
     public TelaCadastroCoordenador(CentralDeInformacoes c, Persistencia p) {
         // Define o tamanho da ÁREA DO FORMULÁRIO (o quadrado branco no meio)
-        super("Cadastro de Coodernador", 450, 600);
+        super("Cadastro de Coordenador", 450, 600);
         
 		this.central = c;
 		this.p = p;
         this.cadastro = new Cadastro(this.central);
 
-        // COMANDO MÁGICO: Transforma em tela cheia
         setTelaCheia(); 
     }
 
     @Override
     protected void montarTela() {
-        // Título
         JLabel lblTitulo = criarLabel("CADASTRO DE COODERNADOR", 0, 15, 450, 30);
         lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
         estilizar(lblTitulo, 22, true);
 
-        // Seção 1
         JLabel lblSecao1 = criarLabel("Dados", 30, 60, 200, 20);
         estilizar(lblSecao1, 12, true);
         lblSecao1.setForeground(java.awt.Color.GRAY);
@@ -47,7 +44,6 @@ public class TelaCadastroCoordenador extends BaseTelas {
         criarLabel("Nome", 30, 170, 80, 25);
         txtNome = criarCampoTexto(100, 170, 280, 25);
         
-        // Botões
         JButton btnSalvar = criarBotao("Salvar Cadastro", 50, 450, 160, 40, this::validarECadastrar);
         estilizar(btnSalvar, 14, true);
         btnSalvar.setForeground(new java.awt.Color(0, 100, 0));
@@ -64,10 +60,11 @@ public class TelaCadastroCoordenador extends BaseTelas {
         
         try {
         	
-    		cadastro.cadastrarCoordenador(senha, nome, email);
+    		
         	Validacao.validacaoSenha(senha);
         	Validacao.emailExistente(email, central);
         	Validacao.isEmailValido(email);
+        	cadastro.cadastrarCoordenador(senha, nome, email);
         	
 
         	

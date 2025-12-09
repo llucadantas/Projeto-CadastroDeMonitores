@@ -14,7 +14,7 @@ public class EditalDeMonitoria {
     private double pesoMedia;
     private List<Disciplina> disciplinas = new ArrayList<>();
     private long id = System.currentTimeMillis() % 1000000;
-    
+    private String status;
     public EditalDeMonitoria(String titulo, Date inicioInscricoes, Date fimInscricoes, int maximoInscricoes, double pesoCRE, double pesoMedia, List<Disciplina> disciplinas) {
         this.titulo = titulo;
         this.inicioInscricoes = inicioInscricoes;
@@ -23,10 +23,23 @@ public class EditalDeMonitoria {
         this.pesoCRE = pesoCRE;
         this.pesoMedia = pesoMedia;
         this.disciplinas = disciplinas;
-        
+        if(jaAcabou()) {
+        	this.status = "Encerrado";
+        }
+        else {
+        	this.status = "Aberto";
+        }
     }
     
-    public boolean inscrever(Aluno aluno, String nDisciplina) {
+    public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public boolean inscrever(Aluno aluno, String nDisciplina) {
         if(jaAcabou()) {
             return false;
         }

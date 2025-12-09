@@ -6,9 +6,9 @@ import java.awt.event.ActionListener;
 
 public class TelaCalcularResultadoEdital extends BaseTelas {
 
-    private int idEdital;
+    private long idEdital;
 
-    public TelaCalcularResultadoEdital(int idEdital) {
+    public TelaCalcularResultadoEdital(long idEdital) {
         super("Calcular Resultado do Edital", 500, 300);
         this.idEdital = idEdital;
     }
@@ -32,8 +32,7 @@ public class TelaCalcularResultadoEdital extends BaseTelas {
     }
 
     private void calcularResultado() {
-        // Aqui você chama o serviço/DAO real
-        // Ex: ResultadoController.calcularResultado(idEdital);
+
 
         JOptionPane.showMessageDialog(this,
                 "Resultado do edital calculado com sucesso!\nAgora os alunos já podem visualizar o ranking.",

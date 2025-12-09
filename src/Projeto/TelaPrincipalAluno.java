@@ -10,9 +10,9 @@ public class TelaPrincipalAluno extends TelaPrincipalBase {
 	private String matricula;
 	
 	
-    public TelaPrincipalAluno(CentralDeInformacoes central, String m, Persistencia p) {
-        super("Painel do Aluno: " + central.recuperarAlunoPorMatricula(m).getNome(), central, p);
-        this.matricula = m;
+    public TelaPrincipalAluno(CentralDeInformacoes central, String email, Persistencia p) {
+        super("Painel do Aluno: " + central.recuperarAlunoPorEmail(email).getNome(), central, p);
+        this.matricula = central.recuperarAlunoPorEmail(email).getMatricula();
     }
     
     private void verEditalSelecionado() {
@@ -47,20 +47,16 @@ public class TelaPrincipalAluno extends TelaPrincipalBase {
         estilizar(btnPerfil, 10, false);
         btnPerfil.setBackground(new Color(230, 230, 230));
     	
-    	// 1. Botões de Menu específicos
         criarBotao("Gerenciar Editais", 30, 120, 180, 40, e -> System.out.println("Abrir Gerenciamento de Editais"));
     	
-        // 2. Ação específica: Botão Novo Edital
         JButton btnNovoEdital = criarBotao("Inscrever-se", 730, 510, 120, 35, e -> setForeground(Color.BLACK));
 
         btnNovoEdital.setBackground(new Color(0, 153, 76)); 
         btnNovoEdital.setForeground(Color.BLACK);
         
         JButton btnVer = criarBotao("Ver Detalhes", 250, 510, 120, 35, e -> verEditalSelecionado());
-        btnVer.setBackground(new Color(255, 140, 0)); // Laranja
+        btnVer.setBackground(new Color(255, 140, 0));
         btnVer.setForeground(Color.BLACK);
         
-        // A tabela de editais (JTable) e o modelo (model) já foram criados e populados
-        // pelo método montarTabelaEditais() na classe pai.
     }
 }

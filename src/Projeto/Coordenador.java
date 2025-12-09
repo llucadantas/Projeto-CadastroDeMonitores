@@ -1,9 +1,9 @@
 package Projeto;
 
-public class Coodernador extends Pessoa {
+public class Coordenador extends Pessoa {
 	
 	
-	public Coodernador(String senha, String nome, String email) {
+	public Coordenador(String senha, String nome, String email) {
 		super();
 		this.nome = nome;
 		this.email = email;
@@ -13,10 +13,9 @@ public class Coodernador extends Pessoa {
 
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
-		return null;
+		return "";
 	}
-	
+
 	
 	
 

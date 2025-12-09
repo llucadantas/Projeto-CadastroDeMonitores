@@ -8,8 +8,8 @@ import java.awt.event.ActionListener;
 
 public abstract class BaseTelas extends JFrame {
 
-    protected JPanel painel; // Painel principal onde os componentes são colocados
-    private JPanel fundo;    // Fundo que centraliza o painel
+    protected JPanel painel;
+    private JPanel fundo;
 
     public BaseTelas(String titulo, int largura, int altura) {
         super(titulo);
@@ -40,9 +40,6 @@ public abstract class BaseTelas extends JFrame {
 
     protected abstract void montarTela();
 
-    // ============================================================
-    // ============ MÉTODOS ORIGINAIS (COMPATÍVEIS) ===============
-    // ============================================================
 
     protected JLabel criarLabel(String texto, int x, int y, int w, int h) {
         JLabel label = new JLabel(texto);
@@ -87,9 +84,6 @@ public abstract class BaseTelas extends JFrame {
     	return botao;
     }
 
-    // ============================================================
-    // === NOVAS SOBRECARGAS PARA ADICIONAR EM OUTRO PAINEL =======
-    // ============================================================
 
     protected JLabel criarLabel(String texto, int x, int y, int w, int h, JPanel destino) {
         JLabel label = new JLabel(texto);
@@ -113,8 +107,7 @@ public abstract class BaseTelas extends JFrame {
         return botao;
     }
 
-    // ============================================================
-
+    
     protected JComboBox<String> criarComboBox(String[] itens, int x, int y, int w, int h) {
         JComboBox<String> combo = new JComboBox<>(itens);
         combo.setBounds(x, y, w, h);
@@ -131,14 +124,13 @@ public abstract class BaseTelas extends JFrame {
     protected JFormattedTextField criarCampoData(int x, int y, int w, int h) {
         JFormattedTextField campo = null;
         try {
-            // Define a máscara: # representa apenas números
+            // PlaceHolder
             MaskFormatter mascara = new MaskFormatter("##/##/####");
             mascara.setPlaceholderCharacter('_'); // Mostra ____ nas partes vazias
             
             campo = new JFormattedTextField(mascara);
             campo.setBounds(x, y, w, h);
             
-            // Adiciona ao painel (assumindo que sua BaseTelas tem a variável 'painel')
             painel.add(campo);
             
         } catch (Exception e) {

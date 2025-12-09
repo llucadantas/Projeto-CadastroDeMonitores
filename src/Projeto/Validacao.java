@@ -57,19 +57,18 @@ public class Validacao {
 		}
 	}
 	
-	public static void emailExistente(String email, CentralDeInformacoes central) throws ValidacaoException{
-		Coodernador c = central.getCoodernador();
-		for(Aluno a: central.getTodosAlunos()) {
-			if(a.getEmail().equals(email)) {
-				throw new ValidacaoException("Email já existente.");
-			}
-		
+	public static void emailExistente(String email, CentralDeInformacoes central) throws ValidacaoException {
+	    for (Aluno a : central.getTodosAlunos()) {
+	        if (a.getEmail().equals(email)) {
+	            throw new ValidacaoException("Email já existente.");
+	        }
+	    }
 
-			}
-		if(c.getEmail().equals(email)) {
-			throw new ValidacaoException("Email já existente.");
-		}
-	
+	    Coordenador c = central.getCoordenador();
+
+	    if (c != null && c.getEmail().equals(email)) {
+	        throw new ValidacaoException("Email já existente.");
+	    }
 	}
 	
 }

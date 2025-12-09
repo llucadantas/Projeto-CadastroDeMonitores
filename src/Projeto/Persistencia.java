@@ -24,7 +24,6 @@ public class Persistencia {
         xstream.allowTypes(new Class[] {
                 CentralDeInformacoes.class,
                 Aluno.class,
-                SexoLista.class,           
                 java.util.ArrayList.class,
              
                 EditalDeMonitoria.class, 
@@ -36,7 +35,7 @@ public class Persistencia {
         xstream.alias("Aluno", Aluno.class);
         xstream.alias("Edital", EditalDeMonitoria.class);
         xstream.alias("Disciplina", Disciplina.class);
-        xstream.alias("Coodernador", Coodernador.class);
+        xstream.alias("Coordenador", Coordenador.class);
 
     }
 	

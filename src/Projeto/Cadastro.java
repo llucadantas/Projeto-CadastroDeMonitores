@@ -32,7 +32,7 @@ public class Cadastro {
         }
 
         
-        Coodernador novoCoodernador = new Coodernador(senha, nome, email);
+        Coordenador novoCoodernador = new Coordenador(senha, nome, email);
         
         this.central.setCoodernador(novoCoodernador);
         

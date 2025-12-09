@@ -20,7 +20,7 @@ public class TelaDetalhesEdital extends JDialog {
     private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
     public TelaDetalhesEdital(Frame parent, EditalDeMonitoria edital) {
-        super(parent, "Detalhes do Edital", true); // 'true' torna a janela Modal (bloqueia a de trás)
+        super(parent, "Detalhes do Edital", false); // 'true' torna a janela Modal (bloqueia a de trás)
         
         setSize(600, 500);
         setLocationRelativeTo(parent); // Centraliza em relação à janela principal
@@ -29,7 +29,7 @@ public class TelaDetalhesEdital extends JDialog {
 
         montarCabecalho(edital);
         montarCorpo(edital);
-        montarRodape(); // Método modificado
+        montarRodape(edital); // Método modificado
         
         setVisible(true);
     }
@@ -116,12 +116,11 @@ public class TelaDetalhesEdital extends JDialog {
         painel.add(p);
     }
 
-    private void montarRodape() {
+    private void montarRodape(EditalDeMonitoria edital) {
         JPanel painelSul = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0)); // Adicionado 10px de hgap
         painelSul.setBackground(new Color(245, 245, 245));
         painelSul.setBorder(new EmptyBorder(10, 10, 10, 10));
         
-        // --- 1. Botão Gerar Resultado (Novo) ---
         
         JButton btnGerarResultado = new JButton("Gerar Resultado");
         btnGerarResultado.setFont(FONTE_LABEL);
@@ -131,26 +130,18 @@ public class TelaDetalhesEdital extends JDialog {
         btnGerarResultado.setPreferredSize(new Dimension(150, 35));
         
         btnGerarResultado.addActionListener(e -> {
-            // Ação: Chamar seu método do back-end para gerar o resultado
-            // Exemplo de como você faria a chamada, que você já possui:
-            // GeradorDeResultados.gerar(edital); 
-            JOptionPane.showMessageDialog(this, 
-                "A função de Gerar Resultado foi chamada. Implemente aqui a chamada ao back-end.", 
-                "Ação de Geração", 
-                JOptionPane.INFORMATION_MESSAGE);
+            new TelaCalcularResultadoEdital(edital.getId());
         });
         
-        // --- 2. Botão Fechar ---
         JButton btnFechar = new JButton("Fechar");
         btnFechar.setFont(FONTE_LABEL);
-        btnFechar.setBackground(new Color(100, 100, 100)); // Cor mais neutra/cinza
-        btnFechar.setForeground(Color.WHITE); // Corrigido para branco para melhor contraste
+        btnFechar.setBackground(new Color(100, 100, 100));
+        btnFechar.setForeground(Color.WHITE);
         btnFechar.setFocusPainted(false);
         btnFechar.setPreferredSize(new Dimension(100, 35));
         
-        btnFechar.addActionListener(e -> dispose()); // Fecha a janela
+        btnFechar.addActionListener(e -> this.dispose()); // Fecha a janela
         
-        // Adiciona os botões no painel
         painelSul.add(btnGerarResultado);
         painelSul.add(btnFechar);
         

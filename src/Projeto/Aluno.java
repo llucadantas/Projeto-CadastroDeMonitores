@@ -19,6 +19,7 @@ public class Aluno extends Pessoa{
 	public String getMatricula() {
 		return matricula;
 	}
+	
 
 
 	public String toString() {

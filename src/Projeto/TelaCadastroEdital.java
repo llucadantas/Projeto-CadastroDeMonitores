@@ -26,31 +26,26 @@ public class TelaCadastroEdital extends BaseTelas {
     private Persistencia p;
     private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-    // Variável para armazenar o edital se for EDIÇÃO (null se for novo)
     private EditalDeMonitoria editalEdicao = null;
 
-    // CONSTRUTOR 1: Novo Cadastro
     public TelaCadastroEdital(CentralDeInformacoes c, Persistencia p) {
         super("Cadastro de Edital", 750, 700);
         this.central = c;
         this.p = p;
     }
 
-    // CONSTRUTOR 2: Edição (CORRIGE O ERRO DE CHAMADA)
     public TelaCadastroEdital(CentralDeInformacoes c, Persistencia p, EditalDeMonitoria edital) {
         super("Editar Edital", 750, 700);
         this.central = c;
         this.p = p;
         this.editalEdicao = edital;
         
-        // Preenche os dados nos campos
         preencherDadosEdicao();
     }
 
     private void preencherDadosEdicao() {
         if (editalEdicao == null) return;
         
-        // Usamos invokeLater para garantir que os campos já existam visualmente (caso o super ainda esteja montando)
         SwingUtilities.invokeLater(() -> {
             if (campoTitulo != null) campoTitulo.setText(editalEdicao.getTitulo());
             if (campoMaxInscricoes != null) campoMaxInscricoes.setText(String.valueOf(editalEdicao.getMaximoInscricoes()));
@@ -79,7 +74,6 @@ public class TelaCadastroEdital extends BaseTelas {
         titulo.setHorizontalAlignment(SwingConstants.CENTER);
         estilizar(titulo, 22, true);
 
-        // Painel Geral
         JPanel painelGeral = new JPanel(null);
         painelGeral.setBounds(40, 70, 670, 180);
         painelGeral.setBorder(BorderFactory.createTitledBorder("Informações"));
@@ -105,7 +99,6 @@ public class TelaCadastroEdital extends BaseTelas {
         criarLabel("Máx. Insc.:", 400, 70, 80, 25, painelGeral);
         campoMaxInscricoes = criarCampoTexto(480, 70, 60, 25, painelGeral);
 
-        // Painel Pesos
         JPanel painelPesos = new JPanel(null);
         painelPesos.setBounds(40, 260, 670, 80);
         painelPesos.setBorder(BorderFactory.createTitledBorder("Pesos (Soma 1.0)"));
@@ -116,7 +109,6 @@ public class TelaCadastroEdital extends BaseTelas {
         criarLabel("Peso Média:", 200, 30, 80, 25, painelPesos);
         campoPesoMedia = criarCampoTexto(290, 30, 80, 25, painelPesos);
 
-        // Painel Disciplinas
         JPanel painelDisc = new JPanel(null);
         painelDisc.setBounds(40, 350, 670, 80);
         painelDisc.setBorder(BorderFactory.createTitledBorder("Nova Disciplina"));
@@ -131,20 +123,17 @@ public class TelaCadastroEdital extends BaseTelas {
         
         criarBotao("Add", 460, 28, 80, 30, e -> adicionarDisciplina(), painelDisc);
 
-        // Tabela
         tabelaModel = new DefaultTableModel(new String[]{"Disciplina", "Rem", "Vol"}, 0);
         JScrollPane scroll = new JScrollPane(new JTable(tabelaModel));
         scroll.setBounds(40, 440, 670, 180);
         painel.add(scroll);
 
-        // Botões Finais
         String btnTxt = (editalEdicao == null) ? "Salvar" : "Atualizar";
         criarBotao(btnTxt, 250, 630, 150, 40, e -> salvar());
         criarBotao("Cancelar", 420, 630, 120, 40, e -> dispose());
         
         setTelaCheia();
         
-        // Se for edição, chama o preenchimento aqui também para garantir
         if(editalEdicao != null) preencherDadosEdicao();
     }
     
@@ -179,10 +168,8 @@ public class TelaCadastroEdital extends BaseTelas {
             }
 
             if (editalEdicao == null) {
-                // Novo Cadastro
                 central.adicionarEdital(new EditalDeMonitoria(titulo, i, f, max, p1, p2, discs));
             } else {
-                // Atualização
                 editalEdicao.setTitulo(titulo); editalEdicao.setInicioInscricoes(i); editalEdicao.setFimInscricoes(f);
                 editalEdicao.setMaximoInscricoes(max);; editalEdicao.setPesoCRE(p1); editalEdicao.setPesoMedia(p2);
                 editalEdicao.setDisciplinas(discs);
@@ -190,7 +177,7 @@ public class TelaCadastroEdital extends BaseTelas {
             p.salvarCentral(central);
             JOptionPane.showMessageDialog(this, "Salvo com Sucesso!");
             dispose();
-            new TelaPrincipalCoordenador(central, p); // Recarrega a tela principal
+            new TelaPrincipalCoordenador(central, p);
         } catch (Exception e) { JOptionPane.showMessageDialog(this, "Erro: " + e.getMessage()); }
     }
 }
