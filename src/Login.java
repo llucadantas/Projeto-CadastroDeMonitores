@@ -1,7 +1,3 @@
-package Projeto;
-
-import javax.swing.JOptionPane;
-
 public class Login {
 	
 	private CentralDeInformacoes central;

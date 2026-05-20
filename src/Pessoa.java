@@ -1,25 +1,10 @@
-package Projeto;
-
-import java.util.UUID;
-
 public abstract class Pessoa {
-	public String nome;
-	public String email;
-	public String senha;
-	
-
-	public boolean isCoodernador;
+	private String nome;
+	private String email;
+	private String senha;
 
 	public String getNome() {
 		return nome;
-	}
-
-	public boolean isCoodernador() {
-		return isCoodernador;
-	}
-
-	public void setCoodernador(boolean isCoodernador) {
-		this.isCoodernador = isCoodernador;
 	}
 
 	public void setNome(String nome) {
