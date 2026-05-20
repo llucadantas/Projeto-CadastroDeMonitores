@@ -16,12 +16,6 @@ public class Main2 {
         if (c == null) {
             c = new CentralDeInformacoes();
         }
-        
-        if(c.getCoordenador() == null) {
-        	new TelaCadastroCoordenador(c, p);
-        }
-        else {
-        	new TelaLogin(c, p);
-        }
+
     }
 }
