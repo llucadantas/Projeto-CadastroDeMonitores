@@ -100,18 +100,18 @@ public class Main {
         try {
             System.out.print("Matrícula (7 dígitos): ");
             String matricula = scanner.nextLine();
-            // Validacao.matriculaInvalida(matricula); // Descomente se ainda tiver a classe Validacao independente de Central
+            // Service.Validacao.matriculaInvalida(matricula); // Descomente se ainda tiver a classe Service.Validacao independente de Central
 
             System.out.print("Nome: ");
             String nome = scanner.nextLine();
 
             System.out.print("E-mail: ");
             String email = scanner.nextLine();
-            // Validacao.isEmailValido(email);
+            // Service.Validacao.isEmailValido(email);
 
             System.out.print("Senha (mínimo 7 caracteres): ");
             String senha = scanner.nextLine();
-            // Validacao.validacaoSenha(senha);
+            // Service.Validacao.validacaoSenha(senha);
 
             // Chama o serviço de cadastro, que já faz a validação de duplicidade e salva no XML
             cadastro.cadastrarAluno(matricula, senha, nome, email);
@@ -213,7 +213,6 @@ public class Main {
             System.out.print("Título do Edital: ");
             String titulo = scanner.nextLine();
 
-            // Usando a API de datas do Java 8+
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
             System.out.print("Data de Início (dd/MM/yyyy): ");
