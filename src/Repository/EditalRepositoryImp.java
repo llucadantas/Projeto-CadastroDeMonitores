@@ -3,7 +3,7 @@ package Repository;
 import Model.Aluno;
 import Model.Disciplina;
 import Model.EditalDeMonitoria;
-import Repository.Interfaces.EditalRepository;
+import Interfaces.EditalRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ public class EditalRepositoryImp implements EditalRepository {
     private static final String ARQUIVO = "editais.xml";
 
     public EditalRepositoryImp() {
-        this.persistencia = new Persistencia();
+        this.persistencia = Persistencia.getInstance();
         this.editais = persistencia.recuperarDados(ARQUIVO);
     }
 

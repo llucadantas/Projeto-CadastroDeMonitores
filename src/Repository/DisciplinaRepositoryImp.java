@@ -1,7 +1,7 @@
 package Repository;
 
 import Model.Disciplina;
-import Repository.Interfaces.DisciplinaRepository;
+import Interfaces.DisciplinaRepository;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ public class DisciplinaRepositoryImp implements DisciplinaRepository {
     private static final String ARQUIVO = "disciplinas.xml";
 
     public DisciplinaRepositoryImp() {
-        this.persistencia = new Persistencia();
+        this.persistencia = Persistencia.getInstance();
         this.disciplinas = persistencia.recuperarDados(ARQUIVO);
     }
 

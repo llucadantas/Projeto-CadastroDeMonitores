@@ -86,7 +86,7 @@ public class EditalDeMonitoria {
         String status;
 
         for(Disciplina d: disciplinas) {
-            dStr.append(d.getNome()).append(" - Vagas - \n");
+            dStr.append(d.getNome()).append(" - Vagas: " + d.getNumeroVagasRemanescentes() + " \n");
         }
 
         if (!jaAcabou()) {

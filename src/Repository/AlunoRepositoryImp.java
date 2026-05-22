@@ -1,7 +1,7 @@
 package Repository;
 
 import Model.Aluno;
-import Repository.Interfaces.AlunoRepository;
+import Interfaces.AlunoRepository;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ public class AlunoRepositoryImp implements AlunoRepository {
 
     // O construtor agora inicializa a persistência e carrega a lista do arquivo
     public AlunoRepositoryImp() {
-        this.persistencia = new Persistencia();
+        this.persistencia = Persistencia.getInstance();
         this.alunos = persistencia.recuperarDados(ARQUIVO);
     }
 

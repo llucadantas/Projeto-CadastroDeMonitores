@@ -1,12 +1,13 @@
-import Model.Aluno;
-import Model.Disciplina;
-import Model.EditalDeMonitoria;
+import Interfaces.*;
+import Model.*;
 import Repository.AlunoRepositoryImp;
 import Repository.CoordenadorRepositoryImp;
 import Repository.DisciplinaRepositoryImp;
 import Repository.EditalRepositoryImp;
-import Service.Cadastro;
-import Service.Login;
+import Service.CadastroAluno;
+import Service.CadastroCoordenador;
+import Service.LoginAluno;
+import Service.LoginCoordenador;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -20,14 +21,17 @@ public class Main {
     private static final Scanner scanner = new Scanner(System.in);
 
     // 1. Instanciando os Repositórios
-    private static final AlunoRepositoryImp alunoRepo = new AlunoRepositoryImp();
-    private static final CoordenadorRepositoryImp coordRepo = new CoordenadorRepositoryImp();
-    private static final EditalRepositoryImp editalRepo = new EditalRepositoryImp();
-    private static final DisciplinaRepositoryImp disciplinaRepo = new DisciplinaRepositoryImp();
+    private static final AlunoRepository alunoRepo = new AlunoRepositoryImp();
+    private static final CoordenadorRepository coordRepo = new CoordenadorRepositoryImp();
+    private static final EditalRepository editalRepo = new EditalRepositoryImp();
+    private static final DisciplinaRepository disciplinaRepo = new DisciplinaRepositoryImp();
 
     // 2. Instanciando os Serviços com Injeção de Dependência (passando os repositórios)
-    private static final Cadastro cadastro = new Cadastro(alunoRepo, coordRepo);
-    private static final Login login = new Login(alunoRepo, coordRepo);
+    private static final CadastroInterface cadastroAluno = new CadastroAluno(alunoRepo);
+    private static final CadastroInterface cadastroCoordenador = new CadastroCoordenador(coordRepo);
+    private static final LoginInterface loginAluno = new LoginAluno(alunoRepo);
+    private static final LoginInterface loginCoodernador = new LoginCoordenador(coordRepo);
+
 
     public static void main(String[] args) {
         int opcao = -1;
@@ -82,13 +86,13 @@ public class Main {
         String senha = scanner.nextLine();
 
         // Usa o serviço de Login atualizado
-        if (login.loginCoodernador(email, senha)) {
+        if (loginCoodernador.logar(email, senha)) {
             System.out.println("Login efetuado com sucesso como COORDENADOR!");
             menuCoordenador();
-        } else if (login.login(email, senha)) {
+        } else if (loginAluno.logar(email, senha)) {
             System.out.println("Login efetuado com sucesso como ALUNO!");
             // Pega o aluno que foi salvo no estado interno da classe Login
-            Aluno alunoLogado = login.getUser();
+            Aluno alunoLogado = (Aluno) loginAluno.getUser();
             menuAluno(alunoLogado);
         } else {
             System.out.println("E-mail ou senha incorretos.");
@@ -100,21 +104,23 @@ public class Main {
         try {
             System.out.print("Matrícula (7 dígitos): ");
             String matricula = scanner.nextLine();
-            // Service.Validacao.matriculaInvalida(matricula); // Descomente se ainda tiver a classe Service.Validacao independente de Central
+            // Validacao.matriculaInvalida(matricula); // Descomente se ainda tiver a classe Validacao independente de Central
 
             System.out.print("Nome: ");
             String nome = scanner.nextLine();
 
             System.out.print("E-mail: ");
             String email = scanner.nextLine();
-            // Service.Validacao.isEmailValido(email);
+            // Validacao.isEmailValido(email);
 
             System.out.print("Senha (mínimo 7 caracteres): ");
             String senha = scanner.nextLine();
-            // Service.Validacao.validacaoSenha(senha);
+            // Validacao.validacaoSenha(senha);
+
+            Pessoa a = new Aluno(matricula, nome, email, senha);
 
             // Chama o serviço de cadastro, que já faz a validação de duplicidade e salva no XML
-            cadastro.cadastrarAluno(matricula, senha, nome, email);
+            cadastroAluno.cadastro(a);
             System.out.println("Aluno cadastrado com sucesso!");
 
         } catch (Exception e) {
@@ -134,8 +140,10 @@ public class Main {
             System.out.print("Senha (mínimo 7 caracteres): ");
             String senha = scanner.nextLine();
 
+            Pessoa c = new Coordenador(senha, nome, email);
+
             // Chama o serviço de cadastro
-            cadastro.cadastrarCoordenador(senha, nome, email);
+            cadastroCoordenador.cadastro(c);
             System.out.println("Coordenador cadastrado com sucesso!");
 
         } catch (Exception e) {
@@ -274,6 +282,7 @@ public class Main {
         try {
             // O ID do edital agora é uma String (UUID)
             long idEdital = scanner.nextLong();
+            scanner.nextLine();
             EditalDeMonitoria edital = editalRepo.buscarEdital(idEdital);
 
             if (edital == null) {

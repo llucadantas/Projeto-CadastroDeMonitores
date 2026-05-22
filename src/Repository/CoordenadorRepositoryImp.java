@@ -1,7 +1,7 @@
 package Repository;
 
 import Model.Coordenador;
-import Repository.Interfaces.CoordenadorRepository;
+import Interfaces.CoordenadorRepository;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ public class CoordenadorRepositoryImp implements CoordenadorRepository {
     private static final String ARQUIVO = "coordenador.xml";
 
     public CoordenadorRepositoryImp() {
-        this.persistencia = new Persistencia();
+        this.persistencia = Persistencia.getInstance();
         this.coordenadores = persistencia.recuperarDados(ARQUIVO);
     }
 

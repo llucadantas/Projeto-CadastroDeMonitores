@@ -1,4 +1,4 @@
-package Repository.Interfaces;
+package Interfaces;
 
 import Model.Disciplina;
 import java.util.List;

@@ -1,4 +1,4 @@
-package Repository.Interfaces;
+package Interfaces;
 
 import Model.Aluno;
 

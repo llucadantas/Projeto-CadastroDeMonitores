@@ -29,7 +29,14 @@
         <nome>Portugues</nome>
         <numeroVagasRemanescentes>5</numeroVagasRemanescentes>
         <numeroVagasVoluntarias>5</numeroVagasVoluntarias>
-        <alunos/>
+        <alunos>
+          <Aluno>
+            <nome>Yezus</nome>
+            <email>yezus@gmail.com</email>
+            <senha>1234567</senha>
+            <matricula>1234567</matricula>
+          </Aluno>
+        </alunos>
       </Disciplina>
     </disciplinas>
     <id>610203</id>
