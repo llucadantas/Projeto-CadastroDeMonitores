@@ -1,3 +1,7 @@
+import Model.Aluno;
+import Model.Coordenador;
+import Service.ValidacaoException;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

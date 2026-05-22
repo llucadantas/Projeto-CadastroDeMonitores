@@ -1,4 +1,6 @@
-public class Aluno extends Pessoa{
+package Model;
+
+public class Aluno extends Pessoa {
 	
 
 	public String matricula;

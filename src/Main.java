@@ -1,17 +1,33 @@
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import Model.Aluno;
+import Model.Disciplina;
+import Model.EditalDeMonitoria;
+import Repository.AlunoRepositoryImp;
+import Repository.CoordenadorRepositoryImp;
+import Repository.DisciplinaRepositoryImp;
+import Repository.EditalRepositoryImp;
+import Service.Cadastro;
+import Service.Login;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
 public class Main {
 
-    private static Scanner scanner = new Scanner(System.in);
-    private static Persistencia persistencia = new Persistencia();
-    private static CentralDeInformacoes central = persistencia.recuperarCentral();
-    private static Cadastro cadastro = new Cadastro(central);
-    private static Login login = new Login(central);
+    private static final Scanner scanner = new Scanner(System.in);
+
+    // 1. Instanciando os Repositórios
+    private static final AlunoRepositoryImp alunoRepo = new AlunoRepositoryImp();
+    private static final CoordenadorRepositoryImp coordRepo = new CoordenadorRepositoryImp();
+    private static final EditalRepositoryImp editalRepo = new EditalRepositoryImp();
+    private static final DisciplinaRepositoryImp disciplinaRepo = new DisciplinaRepositoryImp();
+
+    // 2. Instanciando os Serviços com Injeção de Dependência (passando os repositórios)
+    private static final Cadastro cadastro = new Cadastro(alunoRepo, coordRepo);
+    private static final Login login = new Login(alunoRepo, coordRepo);
 
     public static void main(String[] args) {
         int opcao = -1;
@@ -42,8 +58,6 @@ public class Main {
                         cadastrarCoordenador();
                         break;
                     case 0:
-                        System.out.println("\nSalvando dados no banco.xml...");
-                        persistencia.salvarCentral(central);
                         System.out.println("Sistema encerrado com sucesso. Até logo!");
                         break;
                     default:
@@ -67,15 +81,14 @@ public class Main {
         System.out.print("Senha: ");
         String senha = scanner.nextLine();
 
-        // Tenta logar como Coordenador primeiro
+        // Usa o serviço de Login atualizado
         if (login.loginCoodernador(email, senha)) {
             System.out.println("Login efetuado com sucesso como COORDENADOR!");
             menuCoordenador();
-        }
-        // Se não for, tenta logar como Aluno
-        else if (login.login(email, senha)) {
+        } else if (login.login(email, senha)) {
             System.out.println("Login efetuado com sucesso como ALUNO!");
-            Aluno alunoLogado = central.recuperarAlunoPorEmail(email);
+            // Pega o aluno que foi salvo no estado interno da classe Login
+            Aluno alunoLogado = login.getUser();
             menuAluno(alunoLogado);
         } else {
             System.out.println("E-mail ou senha incorretos.");
@@ -87,24 +100,21 @@ public class Main {
         try {
             System.out.print("Matrícula (7 dígitos): ");
             String matricula = scanner.nextLine();
-            Validacao.matriculaInvalida(matricula);
-            Validacao.matriculaExistente(matricula, central);
+            // Validacao.matriculaInvalida(matricula); // Descomente se ainda tiver a classe Validacao independente de Central
 
             System.out.print("Nome: ");
             String nome = scanner.nextLine();
-            Validacao.nome(nome);
 
             System.out.print("E-mail: ");
             String email = scanner.nextLine();
-            Validacao.isEmailValido(email);
-            Validacao.emailExistente(email, central);
+            // Validacao.isEmailValido(email);
 
             System.out.print("Senha (mínimo 7 caracteres): ");
             String senha = scanner.nextLine();
-            Validacao.validacaoSenha(senha);
+            // Validacao.validacaoSenha(senha);
 
+            // Chama o serviço de cadastro, que já faz a validação de duplicidade e salva no XML
             cadastro.cadastrarAluno(matricula, senha, nome, email);
-            persistencia.salvarCentral(central); // Salva o estado logo após cadastrar
             System.out.println("Aluno cadastrado com sucesso!");
 
         } catch (Exception e) {
@@ -117,18 +127,15 @@ public class Main {
         try {
             System.out.print("Nome: ");
             String nome = scanner.nextLine();
-            Validacao.nome(nome);
 
             System.out.print("E-mail: ");
             String email = scanner.nextLine();
-            Validacao.isEmailValido(email);
 
             System.out.print("Senha (mínimo 7 caracteres): ");
             String senha = scanner.nextLine();
-            Validacao.validacaoSenha(senha);
 
+            // Chama o serviço de cadastro
             cadastro.cadastrarCoordenador(senha, nome, email);
-            persistencia.salvarCentral(central);
             System.out.println("Coordenador cadastrado com sucesso!");
 
         } catch (Exception e) {
@@ -206,12 +213,14 @@ public class Main {
             System.out.print("Título do Edital: ");
             String titulo = scanner.nextLine();
 
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            // Usando a API de datas do Java 8+
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
             System.out.print("Data de Início (dd/MM/yyyy): ");
-            Date dataInicio = sdf.parse(scanner.nextLine());
+            LocalDate dataInicio = LocalDate.parse(scanner.nextLine(), dtf);
 
             System.out.print("Data de Fim (dd/MM/yyyy): ");
-            Date dataFim = sdf.parse(scanner.nextLine());
+            LocalDate dataFim = LocalDate.parse(scanner.nextLine(), dtf);
 
             System.out.print("Máximo de inscrições por aluno: ");
             int maxInscricoes = Integer.parseInt(scanner.nextLine());
@@ -223,19 +232,23 @@ public class Main {
             System.out.print("Vagas Voluntárias: ");
             int vagasVol = Integer.parseInt(scanner.nextLine());
 
+            // Cadastra a disciplina isoladamente no repositório dela
             Disciplina disciplina = new Disciplina(nomeDisciplina, vagasRem, vagasVol);
+            disciplinaRepo.cadastrarDisciplina(disciplina);
+
             List<Disciplina> disciplinas = new ArrayList<>();
             disciplinas.add(disciplina);
 
+            // Cria o edital com a disciplina vinculada
             EditalDeMonitoria edital = new EditalDeMonitoria(
                     titulo, dataInicio, dataFim, maxInscricoes, 7.0, 7.0, disciplinas
             );
 
-            central.adicionarEdital(edital);
-            persistencia.salvarCentral(central);
+            // Salva o edital (o repositório cuida do XML automaticamente)
+            editalRepo.cadastrarEdital(edital);
             System.out.println("Edital criado com sucesso! (ID: " + edital.getId() + ")");
 
-        } catch (ParseException e) {
+        } catch (DateTimeParseException e) {
             System.out.println("Formato de data inválido. Use dd/MM/yyyy.");
         } catch (Exception e) {
             System.out.println("Erro ao criar edital: " + e.getMessage());
@@ -244,7 +257,7 @@ public class Main {
 
     private static void listarEditais() {
         System.out.println("\n--- LISTA DE EDITAIS ---");
-        List<EditalDeMonitoria> editais = central.getTodosEditais();
+        List<EditalDeMonitoria> editais = editalRepo.listarEditais();
 
         if (editais.isEmpty()) {
             System.out.println("Nenhum edital cadastrado no sistema.");
@@ -253,14 +266,16 @@ public class Main {
 
         for (EditalDeMonitoria edital : editais) {
             System.out.println(edital.toString());
+            System.out.println("-------------------------");
         }
     }
 
     private static void inscreverEmMonitoria(Aluno aluno) {
-        System.out.print("Digite o ID do Edital que deseja se inscrever: ");
+        System.out.print("Digite o ID (UUID) do Edital que deseja se inscrever: ");
         try {
-            long idEdital = Long.parseLong(scanner.nextLine());
-            EditalDeMonitoria edital = central.recuperarEdital(idEdital);
+            // O ID do edital agora é uma String (UUID)
+            long idEdital = scanner.nextLong();
+            EditalDeMonitoria edital = editalRepo.buscarEdital(idEdital);
 
             if (edital == null) {
                 System.out.println("Edital não encontrado.");
@@ -270,16 +285,19 @@ public class Main {
             System.out.print("Digite o nome da disciplina para a vaga: ");
             String nomeDisciplina = scanner.nextLine();
 
+            // Tenta inscrever o aluno
             boolean sucesso = edital.inscrever(aluno, nomeDisciplina);
 
             if (sucesso) {
-                persistencia.salvarCentral(central);
+                // Muito importante: Como o estado do edital mudou (recebeu um aluno novo),
+                // forçamos o repositório a reescrever o XML.
+                editalRepo.atualizarDados();
                 System.out.println("Inscrição realizada com sucesso na disciplina " + nomeDisciplina + "!");
             } else {
                 System.out.println("Não foi possível realizar a inscrição. Verifique se a disciplina existe, se o edital está aberto ou se você já está inscrito.");
             }
-        } catch (NumberFormatException e) {
-            System.out.println("ID inválido.");
+        } catch (Exception e) {
+            System.out.println("Erro ao processar inscrição: " + e.getMessage());
         }
     }
 }

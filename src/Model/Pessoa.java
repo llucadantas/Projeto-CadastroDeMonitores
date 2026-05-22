@@ -1,3 +1,5 @@
+package Model;
+
 public abstract class Pessoa {
 	private String nome;
 	private String email;
@@ -26,7 +28,6 @@ public abstract class Pessoa {
 	public void setSenha(String senha) {
 		this.senha = senha;
 	}
-	
-	public abstract String toString();
+
 	
 }

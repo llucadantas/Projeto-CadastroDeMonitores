@@ -1,19 +1,23 @@
-import java.text.SimpleDateFormat;
+package Model;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class EditalDeMonitoria {
+
     private String titulo;
-    private Date inicioInscricoes;
-    private Date fimInscricoes;
+    private LocalDate inicioInscricoes;
+    private LocalDate fimInscricoes;
     private int maximoInscricoes;
     private double pesoCRE;
     private double pesoMedia;
     private List<Disciplina> disciplinas = new ArrayList<>();
     private long id = System.currentTimeMillis() % 1000000;
     private String status;
-    public EditalDeMonitoria(String titulo, Date inicioInscricoes, Date fimInscricoes, int maximoInscricoes, double pesoCRE, double pesoMedia, List<Disciplina> disciplinas) {
+
+    public EditalDeMonitoria(String titulo, LocalDate inicioInscricoes, LocalDate fimInscricoes, int maximoInscricoes, double pesoCRE, double pesoMedia, List<Disciplina> disciplinas) {
         this.titulo = titulo;
         this.inicioInscricoes = inicioInscricoes;
         this.fimInscricoes = fimInscricoes;
@@ -22,72 +26,75 @@ public class EditalDeMonitoria {
         this.pesoMedia = pesoMedia;
         this.disciplinas = disciplinas;
         if(jaAcabou()) {
-        	this.status = "Encerrado";
-        }
-        else {
-        	this.status = "Aberto";
+            this.status = "Encerrado";
+        } else {
+            this.status = "Aberto";
         }
     }
-    
+
     public String getStatus() {
-		return status;
-	}
+        return status;
+    }
 
-	public void setStatus(String status) {
-		this.status = status;
-	}
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
-	public boolean inscrever(Aluno aluno, String nDisciplina) {
+    public boolean inscrever(Aluno aluno, String nDisciplina) {
         if(jaAcabou()) {
             return false;
         }
 
         for(Disciplina d: disciplinas) {
             if(d.getNome().equalsIgnoreCase(nDisciplina)) {
-                return d.adicionarAluno(aluno); 
+                return d.adicionarAluno(aluno);
             }
         }
         return false;
     }
 
     public boolean jaAcabou() {
-        Date hoje = new Date();
-        return hoje.after(fimInscricoes);
+        // CORREÇÃO: Usar LocalDate.now() e isAfter()
+        LocalDate hoje = LocalDate.now();
+        return hoje.isAfter(fimInscricoes);
     }
-    
+
     public Object[] toObjectArray() {
         String status;
-        Date hoje = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        
+
+        // CORREÇÃO: Usar LocalDate e DateTimeFormatter
+        LocalDate hoje = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
         if (jaAcabou()) {
             status = "Encerrado";
-        } else if (hoje.before(inicioInscricoes)) {
+        } else if (hoje.isBefore(inicioInscricoes)) { // CORREÇÃO: isBefore()
             status = "Aguardando Abertura";
         } else {
             status = "Aberto";
         }
-        
-        return new Object[]{id, titulo, sdf.format(inicioInscricoes), sdf.format(fimInscricoes), status};
+
+        // CORREÇÃO: Formatar as datas usando a nova API
+        return new Object[]{id, titulo, inicioInscricoes.format(formatter), fimInscricoes.format(formatter), status};
     }
 
     @Override
     public String toString() {
         String tituloHeader = "- Edital de monitoria " + id + " - \n";
-        
+
         StringBuilder dStr = new StringBuilder();
         String status;
 
         for(Disciplina d: disciplinas) {
-            dStr.append(d.getNome()).append(" - Vagas - \n"); 
+            dStr.append(d.getNome()).append(" - Vagas - \n");
         }
-        
+
         if (!jaAcabou()) {
             status = "abertas";
         } else {
             status = "encerradas";
         }
-        
+
         return tituloHeader + dStr.toString() + "Inscrições " + status;
     }
 
@@ -103,19 +110,20 @@ public class EditalDeMonitoria {
         this.titulo = titulo;
     }
 
-    public Date getInicioInscricoes() {
+    // CORREÇÃO: Os getters e setters agora retornam e recebem LocalDate
+    public LocalDate getInicioInscricoes() {
         return inicioInscricoes;
     }
 
-    public void setInicioInscricoes(Date inicioInscricoes) {
+    public void setInicioInscricoes(LocalDate inicioInscricoes) {
         this.inicioInscricoes = inicioInscricoes;
     }
 
-    public Date getFimInscricoes() {
+    public LocalDate getFimInscricoes() {
         return fimInscricoes;
     }
 
-    public void setFimInscricoes(Date fimInscricoes) {
+    public void setFimInscricoes(LocalDate fimInscricoes) {
         this.fimInscricoes = fimInscricoes;
     }
 
