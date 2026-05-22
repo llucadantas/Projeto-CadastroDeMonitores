@@ -10,18 +10,15 @@ public class Login {
 	private final AlunoRepository alunoRepo;
 	private final CoordenadorRepository coordRepo;
 
-	// Guardam o estado do usuário logado
 	private Aluno user;
 	private Coordenador userCoordenador;
 
-	// Agora o Login recebe os repositórios em vez da Central
 	public Login(AlunoRepository alunoRepo, CoordenadorRepository coordRepo) {
 		this.alunoRepo = alunoRepo;
 		this.coordRepo = coordRepo;
 	}
 
 	public boolean login(String email, String senha) {
-		// Percorre a lista de alunos para encontrar o e-mail correspondente
 		for (Aluno a : alunoRepo.listarAlunos()) {
 			if (a.getEmail().equals(email) && a.getSenha().equals(senha)) {
 				this.user = a;
@@ -42,7 +39,6 @@ public class Login {
 		return false;
 	}
 
-	// Getters para recuperar quem está logado após a validação
 	public Aluno getUser() {
 		return user;
 	}

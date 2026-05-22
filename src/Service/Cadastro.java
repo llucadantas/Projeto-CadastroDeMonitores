@@ -11,9 +11,8 @@ import Repository.CoordenadorRepositoryImp;
 public class Cadastro {
 
     private final AlunoRepository alunoRepo;
-    private final CoordenadorRepositoryImp coordRepo; // Usando a implementação que tem o método de cadastro
+    private final CoordenadorRepositoryImp coordRepo;
 
-    // Injeção de dependências via construtor
     public Cadastro(AlunoRepository alunoRepo, CoordenadorRepositoryImp coordRepo) {
         this.alunoRepo = alunoRepo;
         this.coordRepo = coordRepo;
