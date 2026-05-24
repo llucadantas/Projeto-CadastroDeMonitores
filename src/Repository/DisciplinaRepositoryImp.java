@@ -8,12 +8,12 @@ import java.util.List;
 public class DisciplinaRepositoryImp implements DisciplinaRepository {
 
     private List<Disciplina> disciplinas;
-    private final Persistencia persistencia;
+    private final PersistenciaSingleton persistenciaSingleton;
     private static final String ARQUIVO = "disciplinas.xml";
 
     public DisciplinaRepositoryImp() {
-        this.persistencia = Persistencia.getInstance();
-        this.disciplinas = persistencia.recuperarDados(ARQUIVO);
+        this.persistenciaSingleton = PersistenciaSingleton.getInstance();
+        this.disciplinas = persistenciaSingleton.recuperarDados(ARQUIVO);
     }
 
     @Override
@@ -27,7 +27,7 @@ public class DisciplinaRepositoryImp implements DisciplinaRepository {
 
         // Salva automaticamente no XML
         if (sucesso) {
-            persistencia.salvarDados(disciplinas, ARQUIVO);
+            persistenciaSingleton.salvarDados(disciplinas, ARQUIVO);
         }
 
         return sucesso;
@@ -51,6 +51,6 @@ public class DisciplinaRepositoryImp implements DisciplinaRepository {
 
     // Método auxiliar caso precise atualizar algo (como a quantidade de vagas) e salvar
     public void atualizarDados() {
-        persistencia.salvarDados(disciplinas, ARQUIVO);
+        persistenciaSingleton.salvarDados(disciplinas, ARQUIVO);
     }
 }

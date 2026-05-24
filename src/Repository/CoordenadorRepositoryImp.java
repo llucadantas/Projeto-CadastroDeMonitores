@@ -8,12 +8,12 @@ import java.util.List;
 public class CoordenadorRepositoryImp implements CoordenadorRepository {
 
     private List<Coordenador> coordenadores;
-    private final Persistencia persistencia;
+    private final PersistenciaSingleton persistenciaSingleton;
     private static final String ARQUIVO = "coordenador.xml";
 
     public CoordenadorRepositoryImp() {
-        this.persistencia = Persistencia.getInstance();
-        this.coordenadores = persistencia.recuperarDados(ARQUIVO);
+        this.persistenciaSingleton = PersistenciaSingleton.getInstance();
+        this.coordenadores = persistenciaSingleton.recuperarDados(ARQUIVO);
     }
 
     @Override
@@ -30,6 +30,6 @@ public class CoordenadorRepositoryImp implements CoordenadorRepository {
     public void cadastrarCoordenador(Coordenador coordenador) {
         this.coordenadores.clear(); // Limpa a lista para garantir que só exista 1 coordenador
         this.coordenadores.add(coordenador);
-        persistencia.salvarDados(this.coordenadores, ARQUIVO);
+        persistenciaSingleton.salvarDados(this.coordenadores, ARQUIVO);
     }
 }

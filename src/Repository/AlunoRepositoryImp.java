@@ -8,13 +8,13 @@ import java.util.List;
 public class AlunoRepositoryImp implements AlunoRepository {
 
     private List<Aluno> alunos;
-    private final Persistencia persistencia;
+    private final PersistenciaSingleton persistenciaSingleton;
     private static final String ARQUIVO = "alunos.xml";
 
     // O construtor agora inicializa a persistência e carrega a lista do arquivo
     public AlunoRepositoryImp() {
-        this.persistencia = Persistencia.getInstance();
-        this.alunos = persistencia.recuperarDados(ARQUIVO);
+        this.persistenciaSingleton = PersistenciaSingleton.getInstance();
+        this.alunos = persistenciaSingleton.recuperarDados(ARQUIVO);
     }
 
     @Override
@@ -28,7 +28,7 @@ public class AlunoRepositoryImp implements AlunoRepository {
 
         // Se o aluno foi adicionado com sucesso na memória, salvamos no XML
         if (sucesso) {
-            persistencia.salvarDados(alunos, ARQUIVO);
+            persistenciaSingleton.salvarDados(alunos, ARQUIVO);
         }
 
         return sucesso;
@@ -52,6 +52,6 @@ public class AlunoRepositoryImp implements AlunoRepository {
 
     // Método auxiliar (opcional) para uso interno caso precise forçar um salvamento depois de atualizar um aluno
     public void atualizarDados() {
-        persistencia.salvarDados(alunos, ARQUIVO);
+        persistenciaSingleton.salvarDados(alunos, ARQUIVO);
     }
 }

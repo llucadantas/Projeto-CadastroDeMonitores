@@ -11,12 +11,12 @@ import java.util.List;
 public class EditalRepositoryImp implements EditalRepository {
 
     private List<EditalDeMonitoria> editais;
-    private final Persistencia persistencia;
+    private final PersistenciaSingleton persistenciaSingleton;
     private static final String ARQUIVO = "editais.xml";
 
     public EditalRepositoryImp() {
-        this.persistencia = Persistencia.getInstance();
-        this.editais = persistencia.recuperarDados(ARQUIVO);
+        this.persistenciaSingleton = PersistenciaSingleton.getInstance();
+        this.editais = persistenciaSingleton.recuperarDados(ARQUIVO);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class EditalRepositoryImp implements EditalRepository {
         boolean sucesso = editais.add(edital);
 
         if (sucesso) {
-            persistencia.salvarDados(editais, ARQUIVO);
+            persistenciaSingleton.salvarDados(editais, ARQUIVO);
         }
 
         return sucesso;
@@ -81,6 +81,6 @@ public class EditalRepositoryImp implements EditalRepository {
 
     // Método auxiliar para salvar caso você atualize algum dado do edital em memória (ex: inscrever um aluno)
     public void atualizarDados() {
-        persistencia.salvarDados(editais, ARQUIVO);
+        persistenciaSingleton.salvarDados(editais, ARQUIVO);
     }
 }

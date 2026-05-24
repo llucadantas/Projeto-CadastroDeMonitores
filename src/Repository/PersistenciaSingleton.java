@@ -18,15 +18,15 @@ import Model.EditalDeMonitoria;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
-public class Persistencia {
+public class PersistenciaSingleton {
 
     // 1. Variável estática que guarda a instância única
-    private static Persistencia instancia;
+    private static PersistenciaSingleton instancia;
 
     private final XStream xstream;
 
     // 2. Construtor PRIVADO. Ninguém fora dessa classe pode fazer 'new Persistencia()'
-    private Persistencia() {
+    private PersistenciaSingleton() {
         xstream = new XStream(new DomDriver());
         xstream.addPermission(com.thoughtworks.xstream.security.NoTypePermission.NONE);
 
@@ -44,9 +44,9 @@ public class Persistencia {
     }
 
     // 3. Método global de acesso à instância única
-    public static Persistencia getInstance() {
+    public static PersistenciaSingleton getInstance() {
         if (instancia == null) {
-            instancia = new Persistencia(); // Cria apenas na primeira vez que for chamado
+            instancia = new PersistenciaSingleton(); // Cria apenas na primeira vez que for chamado
         }
         return instancia;
     }

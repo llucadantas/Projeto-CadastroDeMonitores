@@ -1,23 +1,26 @@
 package Model;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import Interfaces.EstadoEdital;
+import Model.State.EditalAberto;
+import Model.State.EditalAguardando;
+import Model.State.EditalFechado;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class EditalDeMonitoria {
-
     private String titulo;
-    private LocalDate inicioInscricoes;
-    private LocalDate fimInscricoes;
+    private Date inicioInscricoes;
+    private Date fimInscricoes;
     private int maximoInscricoes;
     private double pesoCRE;
     private double pesoMedia;
+    private EstadoEdital estado;
     private List<Disciplina> disciplinas = new ArrayList<>();
     private long id = System.currentTimeMillis() % 1000000;
-    private String status;
 
-    public EditalDeMonitoria(String titulo, LocalDate inicioInscricoes, LocalDate fimInscricoes, int maximoInscricoes, double pesoCRE, double pesoMedia, List<Disciplina> disciplinas) {
+    public EditalDeMonitoria(String titulo, Date inicioInscricoes, Date fimInscricoes, int maximoInscricoes, double pesoCRE, double pesoMedia, List<Disciplina> disciplinas) {
         this.titulo = titulo;
         this.inicioInscricoes = inicioInscricoes;
         this.fimInscricoes = fimInscricoes;
@@ -25,57 +28,27 @@ public class EditalDeMonitoria {
         this.pesoCRE = pesoCRE;
         this.pesoMedia = pesoMedia;
         this.disciplinas = disciplinas;
-        if(jaAcabou()) {
-            this.status = "Encerrado";
-        } else {
-            this.status = "Aberto";
+        atualizarEstado();
+    }
+
+    public void atualizarEstado() {
+
+        Date hoje = new Date();
+
+        if(hoje.after(fimInscricoes)) {
+            estado = new EditalFechado();
         }
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
+        else if(hoje.before(inicioInscricoes)) {
+            estado = new EditalAguardando();
+        }
+        else {
+            estado = new EditalAberto();
+        }
     }
 
     public boolean inscrever(Aluno aluno, String nDisciplina) {
-        if(jaAcabou()) {
-            return false;
-        }
-
-        for(Disciplina d: disciplinas) {
-            if(d.getNome().equalsIgnoreCase(nDisciplina)) {
-                return d.adicionarAluno(aluno);
-            }
-        }
-        return false;
-    }
-
-    public boolean jaAcabou() {
-        // CORREÇÃO: Usar LocalDate.now() e isAfter()
-        LocalDate hoje = LocalDate.now();
-        return hoje.isAfter(fimInscricoes);
-    }
-
-    public Object[] toObjectArray() {
-        String status;
-
-        // CORREÇÃO: Usar LocalDate e DateTimeFormatter
-        LocalDate hoje = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
-        if (jaAcabou()) {
-            status = "Encerrado";
-        } else if (hoje.isBefore(inicioInscricoes)) { // CORREÇÃO: isBefore()
-            status = "Aguardando Abertura";
-        } else {
-            status = "Aberto";
-        }
-
-        // CORREÇÃO: Formatar as datas usando a nova API
-        return new Object[]{id, titulo, inicioInscricoes.format(formatter), fimInscricoes.format(formatter), status};
+        atualizarEstado();
+        return estado.permitirInscricao(this, aluno, nDisciplina);
     }
 
     @Override
@@ -83,19 +56,19 @@ public class EditalDeMonitoria {
         String tituloHeader = "- Edital de monitoria " + id + " - \n";
 
         StringBuilder dStr = new StringBuilder();
-        String status;
 
         for(Disciplina d: disciplinas) {
-            dStr.append(d.getNome()).append(" - Vagas: " + d.getNumeroVagasRemanescentes() + " \n");
+            dStr.append(d.getNome()).append(" - Vagas - \n");
         }
 
-        if (!jaAcabou()) {
-            status = "abertas";
-        } else {
-            status = "encerradas";
-        }
+        String status = getEstado().getNomeEstado();
 
         return tituloHeader + dStr.toString() + "Inscrições " + status;
+    }
+
+    public EstadoEdital getEstado() {
+        atualizarEstado();
+        return estado;
     }
 
     public long getId() {
@@ -110,20 +83,19 @@ public class EditalDeMonitoria {
         this.titulo = titulo;
     }
 
-    // CORREÇÃO: Os getters e setters agora retornam e recebem LocalDate
-    public LocalDate getInicioInscricoes() {
+    public Date getInicioInscricoes() {
         return inicioInscricoes;
     }
 
-    public void setInicioInscricoes(LocalDate inicioInscricoes) {
+    public void setInicioInscricoes(Date inicioInscricoes) {
         this.inicioInscricoes = inicioInscricoes;
     }
 
-    public LocalDate getFimInscricoes() {
+    public Date getFimInscricoes() {
         return fimInscricoes;
     }
 
-    public void setFimInscricoes(LocalDate fimInscricoes) {
+    public void setFimInscricoes(Date fimInscricoes) {
         this.fimInscricoes = fimInscricoes;
     }
 
