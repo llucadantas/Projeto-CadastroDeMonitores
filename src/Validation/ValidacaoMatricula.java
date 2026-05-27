@@ -1,4 +1,4 @@
-package Service;
+package Validation;
 
 import Exceptions.ValidacaoException;
 import Interfaces.ValidacaoStrategy;

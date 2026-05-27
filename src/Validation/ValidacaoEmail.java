@@ -1,4 +1,4 @@
-package Service;
+package Validation;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,8 +13,8 @@ public class ValidacaoEmail implements ValidacaoStrategy<String> {
 
 	@Override
 	public void validar(String email) throws ValidacaoException {
-		if (email == null) {
-            throw new ValidacaoException("Email não pode ser nulo.");
+        if (email == null || email.trim().isEmpty()) {
+            throw new ValidacaoException("Email não pode ser nulo ou vazio.");
         }
         Matcher matcher = EMAIL_PATTERN.matcher(email.trim());
         if (!matcher.matches()) {

@@ -5,14 +5,16 @@ import Model.State.EditalAberto;
 import Model.State.EditalAguardando;
 import Model.State.EditalFechado;
 
+import java.time.LocalDate;
+import java.time.chrono.ChronoLocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class EditalDeMonitoria {
     private String titulo;
-    private Date inicioInscricoes;
-    private Date fimInscricoes;
+    private LocalDate inicioInscricoes;
+    private LocalDate fimInscricoes;
     private int maximoInscricoes;
     private double pesoCRE;
     private double pesoMedia;
@@ -20,7 +22,7 @@ public class EditalDeMonitoria {
     private List<Disciplina> disciplinas = new ArrayList<>();
     private long id = System.currentTimeMillis() % 1000000;
 
-    public EditalDeMonitoria(String titulo, Date inicioInscricoes, Date fimInscricoes, int maximoInscricoes, double pesoCRE, double pesoMedia, List<Disciplina> disciplinas) {
+    public EditalDeMonitoria(String titulo, LocalDate inicioInscricoes, LocalDate fimInscricoes, int maximoInscricoes, double pesoCRE, double pesoMedia, List<Disciplina> disciplinas) {
         this.titulo = titulo;
         this.inicioInscricoes = inicioInscricoes;
         this.fimInscricoes = fimInscricoes;
@@ -33,12 +35,12 @@ public class EditalDeMonitoria {
 
     public void atualizarEstado() {
 
-        Date hoje = new Date();
+        ChronoLocalDate hoje = LocalDate.now();
 
-        if(hoje.after(fimInscricoes)) {
+        if(hoje.isAfter(hoje)) {
             estado = new EditalFechado();
         }
-        else if(hoje.before(inicioInscricoes)) {
+        else if(hoje.isAfter(inicioInscricoes)) {
             estado = new EditalAguardando();
         }
         else {
@@ -79,55 +81,23 @@ public class EditalDeMonitoria {
         return titulo;
     }
 
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
-    }
-
-    public Date getInicioInscricoes() {
-        return inicioInscricoes;
-    }
-
-    public void setInicioInscricoes(Date inicioInscricoes) {
-        this.inicioInscricoes = inicioInscricoes;
-    }
-
-    public Date getFimInscricoes() {
-        return fimInscricoes;
-    }
-
-    public void setFimInscricoes(Date fimInscricoes) {
-        this.fimInscricoes = fimInscricoes;
-    }
-
     public int getMaximoInscricoes() {
         return maximoInscricoes;
     }
 
-    public void setMaximoInscricoes(int maximoInscricoes) {
-        this.maximoInscricoes = maximoInscricoes;
-    }
 
     public double getPesoCRE() {
         return pesoCRE;
     }
 
-    public void setPesoCRE(double pesoCRE) {
-        this.pesoCRE = pesoCRE;
-    }
 
     public double getPesoMedia() {
         return pesoMedia;
     }
 
-    public void setPesoMedia(double pesoMedia) {
-        this.pesoMedia = pesoMedia;
-    }
 
     public List<Disciplina> getDisciplinas() {
         return disciplinas;
     }
 
-    public void setDisciplinas(List<Disciplina> disciplinas) {
-        this.disciplinas = disciplinas;
-    }
 }

@@ -27,8 +27,8 @@ public class Main {
     private static final DisciplinaRepository disciplinaRepo = new DisciplinaRepositoryImp();
 
     // 2. Instanciando os Serviços com Injeção de Dependência (passando os repositórios)
-    private static final CadastroInterface cadastroAluno = new CadastroAluno(alunoRepo);
-    private static final CadastroInterface cadastroCoordenador = new CadastroCoordenador(coordRepo);
+    private static final CadastroInterface<Aluno> cadastroAluno = new CadastroAluno(alunoRepo, coordRepo);
+    private static final CadastroInterface<Coordenador> cadastroCoordenador = new CadastroCoordenador(coordRepo, alunoRepo);
     private static final LoginInterface loginAluno = new LoginAluno(alunoRepo);
     private static final LoginInterface loginCoodernador = new LoginCoordenador(coordRepo);
 
@@ -104,22 +104,18 @@ public class Main {
         try {
             System.out.print("Matrícula (7 dígitos): ");
             String matricula = scanner.nextLine();
-            // Validacao.matriculaInvalida(matricula); // Descomente se ainda tiver a classe Validacao independente de Central
 
             System.out.print("Nome: ");
             String nome = scanner.nextLine();
 
             System.out.print("E-mail: ");
             String email = scanner.nextLine();
-            // Validacao.isEmailValido(email);
 
             System.out.print("Senha (mínimo 7 caracteres): ");
             String senha = scanner.nextLine();
-            // Validacao.validacaoSenha(senha);
 
-            Pessoa a = new Aluno(matricula, nome, email, senha);
+            Aluno a = new Aluno(matricula, nome, senha, email);
 
-            // Chama o serviço de cadastro, que já faz a validação de duplicidade e salva no XML
             cadastroAluno.cadastro(a);
             System.out.println("Aluno cadastrado com sucesso!");
 
@@ -140,7 +136,7 @@ public class Main {
             System.out.print("Senha (mínimo 7 caracteres): ");
             String senha = scanner.nextLine();
 
-            Pessoa c = new Coordenador(senha, nome, email);
+            Coordenador c = new Coordenador(senha, nome, email);
 
             // Chama o serviço de cadastro
             cadastroCoordenador.cadastro(c);

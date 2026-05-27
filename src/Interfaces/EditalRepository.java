@@ -11,4 +11,5 @@ public interface EditalRepository {
     List<EditalDeMonitoria> EditaisAluno(Aluno aluno);
     boolean cadastrarEdital(EditalDeMonitoria edital);
 
+    public void atualizarDados();
 }

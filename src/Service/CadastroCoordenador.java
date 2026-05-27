@@ -6,6 +6,9 @@ import Interfaces.AlunoRepository;
 import Interfaces.CadastroInterface;
 import Model.Coordenador;
 import Interfaces.CoordenadorRepository;
+import Validation.ValidacaoEmail;
+import Validation.ValidacaoEmailExistente;
+import Validation.ValidacaoSenha;
 
 // O ideal seria que a interface CoordenadorRepository tivesse o método cadastrar.
 // Como colocamos ele apenas na implementação (CoordenadorRepositoryImp),
