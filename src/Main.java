@@ -4,10 +4,9 @@ import Repository.AlunoRepositoryImp;
 import Repository.CoordenadorRepositoryImp;
 import Repository.DisciplinaRepositoryImp;
 import Repository.EditalRepositoryImp;
-import Service.CadastroAluno;
-import Service.CadastroCoordenador;
-import Service.LoginAluno;
-import Service.LoginCoordenador;
+import Service.*;
+import Factory.AlunoFactory;
+import Factory.CoordenadorFactory;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -26,12 +25,17 @@ public class Main {
     private static final EditalRepository editalRepo = new EditalRepositoryImp();
     private static final DisciplinaRepository disciplinaRepo = new DisciplinaRepositoryImp();
 
-    // 2. Instanciando os Serviços com Injeção de Dependência (passando os repositórios)
+    // 2. Instanciando as Fábricas (Factory Method)
+    private static final PessoaFactory<Aluno> alunoFactory = new AlunoFactory();
+    private static final PessoaFactory<Coordenador> coordFactory = new CoordenadorFactory();
+
+    // 3. Instanciando os Serviços com Injeção de Dependência
     private static final CadastroInterface<Aluno> cadastroAluno = new CadastroAluno(alunoRepo, coordRepo);
     private static final CadastroInterface<Coordenador> cadastroCoordenador = new CadastroCoordenador(coordRepo, alunoRepo);
-    private static final LoginInterface loginAluno = new LoginAluno(alunoRepo);
-    private static final LoginInterface loginCoodernador = new LoginCoordenador(coordRepo);
 
+    // 4. Instanciando os Serviços de Login Separados (SRP Aplicado)
+    private static final LoginInterface loginAluno = new LoginAluno(alunoRepo);
+    private static final LoginInterface loginCoordenador = new LoginCoordenador(coordRepo);
 
     public static void main(String[] args) {
         int opcao = -1;
@@ -76,7 +80,7 @@ public class Main {
         scanner.close();
     }
 
-    // --- MÉTODOS DE LOGIN E CADASTRO ---
+    // --- MÉTODOS DE LOGIN E CADASTRO REFATORADOS ---
 
     private static void fazerLogin() {
         System.out.println("\n--- TELA DE LOGIN ---");
@@ -85,16 +89,20 @@ public class Main {
         System.out.print("Senha: ");
         String senha = scanner.nextLine();
 
-        // Usa o serviço de Login atualizado
-        if (loginCoodernador.logar(email, senha)) {
+        // Eliminação do instanceof: Tentamos logar como Coordenador primeiro
+        if (loginCoordenador.logar(email, senha)) {
             System.out.println("Login efetuado com sucesso como COORDENADOR!");
             menuCoordenador();
-        } else if (loginAluno.logar(email, senha)) {
+        }
+        // Se falhar, tentamos logar como Aluno
+        else if (loginAluno.logar(email, senha)) {
             System.out.println("Login efetuado com sucesso como ALUNO!");
-            // Pega o aluno que foi salvo no estado interno da classe Login
+
+            // O cast é seguro aqui pois sabemos que loginAluno retorna instâncias de Aluno
             Aluno alunoLogado = (Aluno) loginAluno.getUser();
             menuAluno(alunoLogado);
-        } else {
+        }
+        else {
             System.out.println("E-mail ou senha incorretos.");
         }
     }
@@ -114,7 +122,7 @@ public class Main {
             System.out.print("Senha (mínimo 7 caracteres): ");
             String senha = scanner.nextLine();
 
-            Aluno a = new Aluno(matricula, nome, senha, email);
+            Aluno a = alunoFactory.criarPessoa(nome, email, senha, matricula);
 
             cadastroAluno.cadastro(a);
             System.out.println("Aluno cadastrado com sucesso!");
@@ -136,9 +144,8 @@ public class Main {
             System.out.print("Senha (mínimo 7 caracteres): ");
             String senha = scanner.nextLine();
 
-            Coordenador c = new Coordenador(senha, nome, email);
+            Coordenador c = coordFactory.criarPessoa(nome, email, senha, null);
 
-            // Chama o serviço de cadastro
             cadastroCoordenador.cadastro(c);
             System.out.println("Coordenador cadastrado com sucesso!");
 
@@ -235,19 +242,16 @@ public class Main {
             System.out.print("Vagas Voluntárias: ");
             int vagasVol = Integer.parseInt(scanner.nextLine());
 
-            // Cadastra a disciplina isoladamente no repositório dela
             Disciplina disciplina = new Disciplina(nomeDisciplina, vagasRem, vagasVol);
             disciplinaRepo.cadastrarDisciplina(disciplina);
 
             List<Disciplina> disciplinas = new ArrayList<>();
             disciplinas.add(disciplina);
 
-            // Cria o edital com a disciplina vinculada
             EditalDeMonitoria edital = new EditalDeMonitoria(
                     titulo, dataInicio, dataFim, maxInscricoes, 7.0, 7.0, disciplinas
             );
 
-            // Salva o edital (o repositório cuida do XML automaticamente)
             editalRepo.cadastrarEdital(edital);
             System.out.println("Edital criado com sucesso! (ID: " + edital.getId() + ")");
 
@@ -276,7 +280,6 @@ public class Main {
     private static void inscreverEmMonitoria(Aluno aluno) {
         System.out.print("Digite o ID (UUID) do Edital que deseja se inscrever: ");
         try {
-            // O ID do edital agora é uma String (UUID)
             long idEdital = scanner.nextLong();
             scanner.nextLine();
             EditalDeMonitoria edital = editalRepo.buscarEdital(idEdital);
@@ -289,12 +292,9 @@ public class Main {
             System.out.print("Digite o nome da disciplina para a vaga: ");
             String nomeDisciplina = scanner.nextLine();
 
-            // Tenta inscrever o aluno
             boolean sucesso = edital.inscrever(aluno, nomeDisciplina);
 
             if (sucesso) {
-                // Muito importante: Como o estado do edital mudou (recebeu um aluno novo),
-                // forçamos o repositório a reescrever o XML.
                 editalRepo.atualizarDados();
                 System.out.println("Inscrição realizada com sucesso na disciplina " + nomeDisciplina + "!");
             } else {

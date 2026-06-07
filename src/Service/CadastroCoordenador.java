@@ -26,7 +26,7 @@ public class CadastroCoordenador implements CadastroInterface<Coordenador> {
 
 
     public boolean cadastro(Coordenador c) throws CadastroException {
-    	// 1. Validação simples de preenchimento do nome
+        // 1. Validação simples de preenchimento do nome
         if (c.getNome() == null || c.getNome().trim().isEmpty() || c.getSenha().trim().isEmpty() || c.getEmail().trim().isEmpty()) {
             throw new CadastroException("Todos os campos precisam ser preenchidos");
         }

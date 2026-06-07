@@ -23,7 +23,7 @@ public class CadastroAluno implements CadastroInterface<Aluno> {
     }
 
     public boolean cadastro(Aluno a) throws CadastroException {
-    	// 1. Validação simples de preenchimento do nome (baseado na classe antiga)
+        // 1. Validação simples de preenchimento do nome (baseado na classe antiga)
         if (a.getNome() == null || a.getNome().trim().isEmpty()) {
             throw new CadastroException("Digite seu nome.");
         }
