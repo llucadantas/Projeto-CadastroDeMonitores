@@ -280,8 +280,9 @@ public class Main {
     private static void inscreverEmMonitoria(Aluno aluno) {
         System.out.print("Digite o ID (UUID) do Edital que deseja se inscrever: ");
         try {
-            long idEdital = scanner.nextLong();
-            scanner.nextLine();
+            // AJUSTE DE SEGURANÇA: Lê a linha inteira e converte para Long
+            long idEdital = Long.parseLong(scanner.nextLine());
+
             EditalDeMonitoria edital = editalRepo.buscarEdital(idEdital);
 
             if (edital == null) {
@@ -300,6 +301,8 @@ public class Main {
             } else {
                 System.out.println("Não foi possível realizar a inscrição. Verifique se a disciplina existe, se o edital está aberto ou se você já está inscrito.");
             }
+        } catch (NumberFormatException e) {
+            System.out.println("ID inválido. Por favor, digite um número válido.");
         } catch (Exception e) {
             System.out.println("Erro ao processar inscrição: " + e.getMessage());
         }
