@@ -1,3 +1,4 @@
+import Factory.PessoaFactory;
 import Interfaces.*;
 import Model.*;
 import Repository.AlunoRepositoryImp;

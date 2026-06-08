@@ -37,7 +37,7 @@ public class EditalDeMonitoria {
 
         ChronoLocalDate hoje = LocalDate.now();
 
-        if(hoje.isAfter(hoje)) {
+        if(hoje.isAfter(fimInscricoes)) {
             estado = new EditalFechado();
         }
         else if(hoje.isAfter(inicioInscricoes)) {
