@@ -11,7 +11,6 @@ public class AlunoRepositoryImp implements AlunoRepository {
     private final PersistenciaSingleton persistenciaSingleton;
     private static final String ARQUIVO = "alunos.xml";
 
-    // O construtor agora inicializa a persistência e carrega a lista do arquivo
     public AlunoRepositoryImp() {
         this.persistenciaSingleton = PersistenciaSingleton.getInstance();
         this.alunos = persistenciaSingleton.recuperarDados(ARQUIVO);
@@ -19,14 +18,12 @@ public class AlunoRepositoryImp implements AlunoRepository {
 
     @Override
     public boolean adicionarAluno(Aluno aluno) {
-        // Regra de negócio opcional, mas recomendada: evitar matrículas duplicadas
         if (recuperarAlunoPorMatricula(aluno.getMatricula()) != null) {
             return false;
         }
 
         boolean sucesso = alunos.add(aluno);
 
-        // Se o aluno foi adicionado com sucesso na memória, salvamos no XML
         if (sucesso) {
             persistenciaSingleton.salvarDados(alunos, ARQUIVO);
         }
@@ -42,7 +39,6 @@ public class AlunoRepositoryImp implements AlunoRepository {
     @Override
     public Aluno recuperarAlunoPorMatricula(String nMatricula) {
         for (Aluno a : alunos) {
-            // Usando a comparação segura que discutimos antes para evitar NullPointerException
             if (nMatricula.equals(a.getMatricula())) {
                 return a;
             }
@@ -50,7 +46,6 @@ public class AlunoRepositoryImp implements AlunoRepository {
         return null;
     }
 
-    // Método auxiliar (opcional) para uso interno caso precise forçar um salvamento depois de atualizar um aluno
     public void atualizarDados() {
         persistenciaSingleton.salvarDados(alunos, ARQUIVO);
     }

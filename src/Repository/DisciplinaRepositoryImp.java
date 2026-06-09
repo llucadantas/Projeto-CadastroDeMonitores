@@ -18,14 +18,12 @@ public class DisciplinaRepositoryImp implements DisciplinaRepository {
 
     @Override
     public boolean cadastrarDisciplina(Disciplina disciplina) {
-        // Verifica se já existe uma disciplina com o mesmo nome antes de adicionar
         if (buscarDisciplina(disciplina.getNome()) != null) {
             return false;
         }
 
         boolean sucesso = disciplinas.add(disciplina);
 
-        // Salva automaticamente no XML
         if (sucesso) {
             persistenciaSingleton.salvarDados(disciplinas, ARQUIVO);
         }
@@ -49,7 +47,6 @@ public class DisciplinaRepositoryImp implements DisciplinaRepository {
         return null;
     }
 
-    // Método auxiliar caso precise atualizar algo (como a quantidade de vagas) e salvar
     public void atualizarDados() {
         persistenciaSingleton.salvarDados(disciplinas, ARQUIVO);
     }

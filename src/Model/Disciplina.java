@@ -13,7 +13,6 @@ public class Disciplina {
 	private int numeroVagasVoluntarias;
 	private List<Aluno> alunos = new ArrayList<>();
 
-	// Construtor vazio necessário para frameworks (JPA/Hibernate, Jackson, etc)
 	public Disciplina() {
 	}
 
@@ -23,13 +22,11 @@ public class Disciplina {
 		this.numeroVagasVoluntarias = numeroVagasVoluntarias;
 	}
 
-	// Retorna uma cópia somente leitura para proteger o encapsulamento
 	public List<Aluno> getAlunos() {
 		return Collections.unmodifiableList(alunos);
 	}
 
 	public boolean adicionarAluno(Aluno aluno) {
-		// Opcional: usar Streams para deixar mais limpo
 		boolean jaMatriculado = alunos.stream()
 				.anyMatch(a -> a.getMatricula().equals(aluno.getMatricula()));
 

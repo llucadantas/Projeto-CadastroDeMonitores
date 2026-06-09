@@ -42,7 +42,6 @@ public class EditalRepositoryImp implements EditalRepository {
         for (EditalDeMonitoria edital : editais) {
             boolean encontrouAluno = false;
 
-            // Olha as disciplinas dentro do edital
             for (Disciplina disciplina : edital.getDisciplinas()) {
 
                 // Olha os alunos dentro da disciplina
@@ -50,11 +49,10 @@ public class EditalRepositoryImp implements EditalRepository {
                     if (aluno.getMatricula().equals(a.getMatricula())) {
                         editaisDoAluno.add(edital);
                         encontrouAluno = true;
-                        break; // Já achou o aluno nesta disciplina, pode parar a busca de alunos
+                        break;
                     }
                 }
 
-                // Se já achou o aluno no edital, não precisa olhar as outras disciplinas dele
                 if (encontrouAluno) {
                     break;
                 }
@@ -79,7 +77,6 @@ public class EditalRepositoryImp implements EditalRepository {
         return sucesso;
     }
 
-    // Método auxiliar para salvar caso você atualize algum dado do edital em memória (ex: inscrever um aluno)
     public void atualizarDados() {
         persistenciaSingleton.salvarDados(editais, ARQUIVO);
     }

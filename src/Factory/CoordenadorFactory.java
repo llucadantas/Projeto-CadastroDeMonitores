@@ -10,7 +10,6 @@ public class CoordenadorFactory extends PessoaFactory<Coordenador> {
 
         validarDadosComuns(email, senha);
 
-        // 2. Instanciação segura (Coordenador não utiliza matrícula)
         return new Coordenador(senha, nome, email);
     }
 }

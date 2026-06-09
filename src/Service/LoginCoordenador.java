@@ -16,11 +16,9 @@ public class LoginCoordenador implements LoginInterface {
 
 	@Override
 	public boolean logar(String email, String senha) {
-		// Busca o coordenador
 		Coordenador coord = coordRepo.getCoordenador();
 
 		if (coord != null && coord.getEmail().equals(email)) {
-			// Utiliza a interface Autenticavel (implementada em Coordenador/Pessoa)
 			if (coord.autenticar(senha)) {
 				this.usuarioLogado = coord;
 				return true;

@@ -25,7 +25,6 @@ public class PersistenciaSingleton {
 
     private final XStream xstream;
 
-    // 2. Construtor PRIVADO. Ninguém fora dessa classe pode fazer 'new Persistencia()'
     private PersistenciaSingleton() {
         xstream = new XStream(new DomDriver());
         xstream.addPermission(com.thoughtworks.xstream.security.NoTypePermission.NONE);

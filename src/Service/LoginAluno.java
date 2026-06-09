@@ -16,10 +16,8 @@ public class LoginAluno implements LoginInterface {
 
 	@Override
 	public boolean logar(String email, String senha) {
-		// Varre a lista de alunos
 		for (Aluno a : alunoRepo.listarAlunos()) {
 			if (a.getEmail().equals(email)) {
-				// Utiliza a interface Autenticavel (implementada em Aluno/Pessoa)
 				if (a.autenticar(senha)) {
 					this.usuarioLogado = a;
 					return true;
