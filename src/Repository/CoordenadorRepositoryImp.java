@@ -25,7 +25,7 @@ public class CoordenadorRepositoryImp implements CoordenadorRepository {
     }
 
     public void cadastrarCoordenador(Coordenador coordenador) {
-        this.coordenadores.clear(); // Limpa a lista para garantir que só exista 1 coordenador
+        this.coordenadores.clear();
         this.coordenadores.add(coordenador);
         persistenciaSingleton.salvarDados(this.coordenadores, ARQUIVO);
     }

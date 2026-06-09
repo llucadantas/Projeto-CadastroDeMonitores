@@ -7,7 +7,6 @@ import Validation.*;
 public abstract class PessoaFactory<T extends Pessoa> {
 
     protected void validarDadosComuns(String email, String senha) throws ValidacaoException {
-        // A fábrica delega a validação para as classes Strategy!
         new ValidacaoEmail().validar(email);
         new ValidacaoSenha().validar(senha);
     }

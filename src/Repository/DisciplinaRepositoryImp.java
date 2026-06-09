@@ -39,7 +39,6 @@ public class DisciplinaRepositoryImp implements DisciplinaRepository {
     @Override
     public Disciplina buscarDisciplina(String nome) {
         for (Disciplina d : disciplinas) {
-            // Compara os nomes ignorando diferenças entre maiúsculas e minúsculas
             if (d.getNome().equalsIgnoreCase(nome)) {
                 return d;
             }

@@ -20,21 +20,17 @@ public class Main {
 
     private static final Scanner scanner = new Scanner(System.in);
 
-    // 1. Instanciando os Repositórios
     private static final AlunoRepository alunoRepo = new AlunoRepositoryImp();
     private static final CoordenadorRepository coordRepo = new CoordenadorRepositoryImp();
     private static final EditalRepository editalRepo = new EditalRepositoryImp();
     private static final DisciplinaRepository disciplinaRepo = new DisciplinaRepositoryImp();
 
-    // 2. Instanciando as Fábricas (Factory Method)
     private static final PessoaFactory<Aluno> alunoFactory = new AlunoFactory();
     private static final PessoaFactory<Coordenador> coordFactory = new CoordenadorFactory();
 
-    // 3. Instanciando os Serviços com Injeção de Dependência
     private static final CadastroInterface<Aluno> cadastroAluno = new CadastroAluno(alunoRepo, coordRepo);
     private static final CadastroInterface<Coordenador> cadastroCoordenador = new CadastroCoordenador(coordRepo, alunoRepo);
 
-    // 4. Instanciando os Serviços de Login Separados (SRP Aplicado)
     private static final LoginInterface loginAluno = new LoginAluno(alunoRepo);
     private static final LoginInterface loginCoordenador = new LoginCoordenador(coordRepo);
 
@@ -81,7 +77,6 @@ public class Main {
         scanner.close();
     }
 
-    // --- MÉTODOS DE LOGIN E CADASTRO REFATORADOS ---
 
     private static void fazerLogin() {
         System.out.println("\n--- TELA DE LOGIN ---");
@@ -90,16 +85,13 @@ public class Main {
         System.out.print("Senha: ");
         String senha = scanner.nextLine();
 
-        // Eliminação do instanceof: Tentamos logar como Coordenador primeiro
         if (loginCoordenador.logar(email, senha)) {
             System.out.println("Login efetuado com sucesso como COORDENADOR!");
             menuCoordenador();
         }
-        // Se falhar, tentamos logar como Aluno
         else if (loginAluno.logar(email, senha)) {
             System.out.println("Login efetuado com sucesso como ALUNO!");
 
-            // O cast é seguro aqui pois sabemos que loginAluno retorna instâncias de Aluno
             Aluno alunoLogado = (Aluno) loginAluno.getUser();
             menuAluno(alunoLogado);
         }
@@ -155,7 +147,6 @@ public class Main {
         }
     }
 
-    // --- MENUS ESPECÍFICOS POR PERFIL ---
 
     private static void menuCoordenador() {
         int opcao = -1;
@@ -217,7 +208,6 @@ public class Main {
         }
     }
 
-    // --- FUNCIONALIDADES DE EDITAL ---
 
     private static void criarEdital() {
         System.out.println("\n--- NOVO EDITAL DE MONITORIA ---");
@@ -281,7 +271,6 @@ public class Main {
     private static void inscreverEmMonitoria(Aluno aluno) {
         System.out.print("Digite o ID (UUID) do Edital que deseja se inscrever: ");
         try {
-            // AJUSTE DE SEGURANÇA: Lê a linha inteira e converte para Long
             long idEdital = Long.parseLong(scanner.nextLine());
 
             EditalDeMonitoria edital = editalRepo.buscarEdital(idEdital);

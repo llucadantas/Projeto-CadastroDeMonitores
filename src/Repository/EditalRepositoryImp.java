@@ -38,13 +38,11 @@ public class EditalRepositoryImp implements EditalRepository {
     public List<EditalDeMonitoria> EditaisAluno(Aluno aluno) {
         List<EditalDeMonitoria> editaisDoAluno = new ArrayList<>();
 
-        // Percorre todos os editais salvos
         for (EditalDeMonitoria edital : editais) {
             boolean encontrouAluno = false;
 
             for (Disciplina disciplina : edital.getDisciplinas()) {
 
-                // Olha os alunos dentro da disciplina
                 for (Aluno a : disciplina.getAlunos()) {
                     if (aluno.getMatricula().equals(a.getMatricula())) {
                         editaisDoAluno.add(edital);

@@ -20,7 +20,6 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 
 public class PersistenciaSingleton {
 
-    // 1. Variável estática que guarda a instância única
     private static PersistenciaSingleton instancia;
 
     private final XStream xstream;
@@ -42,10 +41,9 @@ public class PersistenciaSingleton {
         xstream.alias("Lista", java.util.ArrayList.class);
     }
 
-    // 3. Método global de acesso à instância única
     public static PersistenciaSingleton getInstance() {
         if (instancia == null) {
-            instancia = new PersistenciaSingleton(); // Cria apenas na primeira vez que for chamado
+            instancia = new PersistenciaSingleton();
         }
         return instancia;
     }
